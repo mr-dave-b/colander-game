@@ -1,0 +1,24 @@
+﻿@{
+    ViewData["Title"] = "Game Page!";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+
+    @using(Html.BeginForm())
+    {
+        <button type="submit">
+            Draw the first paper!
+        </button>
+        <button type="submit">
+            <em>Success</em>
+            Draw the next paper!
+        </button>
+        <button type="submit">
+            <em>Time up/Give up</em>
+            Put this paper back in
+        </button>
+    }
+
+</div>
