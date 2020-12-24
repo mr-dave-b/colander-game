@@ -6,27 +6,59 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using colander_game.Models;
 using System.Text.RegularExpressions;
+using colander_game.Services;
 
 namespace colander_game.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index()
+        private ISessionService _sessionService;
+
+        public HomeController(ISessionService sessionService)
         {
-            return View();
+            _sessionService = sessionService;
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            var userId = _sessionService.GetUserId(Request, Response);
+            var userModel = await _sessionService.GetUserData(userId);
+            
+            return View(new GameRenderModel
+            {
+                    User = userModel
+            });
         }
 
         [HttpPost]
-        public IActionResult Index([FromForm] string gameId)
+        public async Task<IActionResult> Index(
+            [FromForm] string gameId,
+            [FromForm] string yourName)
         {
-            if (string.IsNullOrEmpty(gameId))
+
+            if (!string.IsNullOrEmpty(gameId))
             {
-                return Index();
+                gameId = gameId.FormatGameId();
+                return Redirect($"/game/{gameId}");
             }
 
-            gameId = gameId.FormatGameId();
+            var userId = _sessionService.GetUserId(Request, Response);
+                        
+            if (!string.IsNullOrEmpty(yourName))
+            {
+                var model = new UserModel
+                {
+                    UserId = userId,
+                    UserName = yourName,
+                    SessionId = userId
+                };
 
-            return Redirect($"/game/{gameId}");
+                var task = _sessionService.SaveUserData(model);
+                
+                return Redirect("/");
+            }
+
+            return await Index();
         }
 
         public IActionResult Privacy()

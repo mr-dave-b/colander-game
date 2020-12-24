@@ -1,15 +1,29 @@
-﻿@{
+﻿@model GameRenderModel;
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
+    <h1 class="display-4">Welcome @Model.User?.UserName</h1>
 
-    <p>Enter a Game ID to join or create a game</p>
-    @using(Html.BeginForm())
+    @if (string.IsNullOrWhiteSpace(Model.User?.UserName))
     {
-        <input type="text" name="gameid" placeholder="enter a game id" />
-        <input type="submit" value="Go" />
+        <p>Please enter your name</p>
+        @using(Html.BeginForm())
+        {
+            <input type="text" name="yourname" placeholder="who are you?" />
+            <input type="submit" value="Go" />
+        }
+    }
+    else
+    {
+        <p>Enter a Game ID to join or create a game</p>
+        @using(Html.BeginForm())
+        {
+            <input type="text" name="gameid" placeholder="enter a game id" />
+            <input type="submit" value="Go" />
+        }
     }
 
 </div>

@@ -1,10 +1,16 @@
-﻿@{
+﻿@model GameRenderModel;
+
+@{
     ViewData["Title"] = "Game Page!";
 }
 
+@if (Model?.Game == null)
+{
+    return;
+}
+
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Welcome< to CG!</h1>
 
     @using(Html.BeginForm())
     {
@@ -21,4 +27,52 @@
         </button>
     }
 
+</div>
+
+<div>
+    <h2>Teams</h2>
+    @if (Model.Game?.Teams != null)
+    {
+        @foreach (var team in Model.Game.Teams)
+        {
+            <p>
+                <b>@team.Name (@(team.Score)pts)</b> <br>
+                @if (team.Players != null)
+                {
+                    @foreach (var player in team.Players)
+                    {
+                        if (player.UserId == Model.User?.UserId)
+                        {
+                            <text>
+                            <b>@player.UserName (YOU)</b>
+                            <br />
+                        </text>
+                        }
+                        <text>
+                            @player.UserName
+                            <br />
+                        </text>
+                    }
+                }
+
+                <br>
+
+                @using(Html.BeginForm("JoinTeam", "Game", new { gameId = Model.Game.GameId }, FormMethod.Post))
+                {
+                    <input type="hidden" name="teamName" value="@team.Name" />
+                    <button type="submit">
+                        Join @team.Name
+                    </button>
+                }
+            </p>
+            
+        }
+    }
+
+    <form method="POST" action="/game/@Model.Game.GameId/jointeam">
+        <input type="text" name="TeamName" placeholder="New team" />
+        <button type="submit">
+            Create new team
+        </button>
+    </form>
 </div>
