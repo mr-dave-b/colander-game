@@ -51,5 +51,18 @@ namespace colander_game.Controllers
 
             return Redirect($"/game/{gameId}");
         }
+
+        [Route("game/{gameId}/addpaper")]
+        [HttpPost]
+        public async Task<IActionResult> AddPaper(string gameId, [FromForm] string newPaper)
+        {
+            gameId = gameId.FormatGameId();
+
+            var userId = _sessionService.GetUserId(Request, Response);
+
+            var game = await _gameService.AddNewPaperAsync(gameId, newPaper, userId);
+
+            return Redirect($"/game/{gameId}");
+        }
     }
 }

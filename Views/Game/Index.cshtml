@@ -10,21 +10,51 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome< to CG!</h1>
+    <h1 class="display-4">Welcome to CG!</h1>
 
-    @using(Html.BeginForm())
+    <p>@(Model.Game.ColanderPapers?.Count ?? 0) papers are in the colander
+    @if (Model.Game.PlayedPapers?.Count > 0)
     {
-        <button type="submit">
-            Draw the first paper!
-        </button>
-        <button type="submit">
-            <em>Success</em>
-            Draw the next paper!
-        </button>
-        <button type="submit">
-            <em>Time up/Give up</em>
-            Put this paper back in
-        </button>
+        <br />
+        @Model.Game.PlayedPapers.Count
+        <text> are currently on the floor</text>
+    }
+    </p>
+
+    @if (Model.Game.GameStarted)
+    {
+        @if (Model.CurrentTeam() == null)
+        {
+            <h2>You need to join a team if you want to play</h2>
+        }
+        else
+        {
+            
+            @using(Html.BeginForm())
+            {
+                <button type="submit">
+                    Draw the first paper!
+                </button>
+                <button type="submit">
+                    <em>Success</em>
+                    Draw the next paper!
+                </button>
+                <button type="submit">
+                    <em>Time up/Give up</em>
+                    Put this paper back in
+                </button>
+            }
+        }
+    }
+    else
+    {
+        <p>Write some words on a piece of paper: </p>
+        <form method="POST" action="/game/@Model.Game.GameId/addpaper">
+            <input type="text" name="NewPaper" placeholder="My fun words go here" />
+            <button type="submit">
+                Add it to the colander!
+            </button>
+        </form>
     }
 
 </div>
@@ -37,33 +67,43 @@
         {
             <p>
                 <b>@team.Name (@(team.Score)pts)</b> <br>
+                @team.Players.Count players
                 @if (team.Players != null)
                 {
+                    <ul>
                     @foreach (var player in team.Players)
                     {
                         if (player.UserId == Model.User?.UserId)
                         {
-                            <text>
+                            <li>
                             <b>@player.UserName (YOU)</b>
                             <br />
-                        </text>
+                            </li>
                         }
-                        <text>
-                            @player.UserName
-                            <br />
-                        </text>
+                        else
+                        {
+                            <li>
+                                @player.UserName
+                                <br />
+                            </li>
+                        }
+
+                    }
+                    </ul>
+
+                    <!-- br -->
+                    @if (Model.CurrentTeam() != team)
+                    {
+                        @using(Html.BeginForm("JoinTeam", "Game", new { gameId = Model.Game.GameId }, FormMethod.Post))
+                        {
+                            <input type="hidden" name="teamName" value="@team.Name" />
+                            <button type="submit">
+                                Join @team.Name
+                            </button>
+                        }
                     }
                 }
 
-                <br>
-
-                @using(Html.BeginForm("JoinTeam", "Game", new { gameId = Model.Game.GameId }, FormMethod.Post))
-                {
-                    <input type="hidden" name="teamName" value="@team.Name" />
-                    <button type="submit">
-                        Join @team.Name
-                    </button>
-                }
             </p>
             
         }

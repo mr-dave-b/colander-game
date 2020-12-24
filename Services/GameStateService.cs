@@ -69,6 +69,38 @@ namespace colander_game.Services
             return game;
         }
 
+        public async Task<GameModel> AddNewPaperAsync(string gameId, string paperWords, string userId)
+        {
+            var game = await GetGameAsync(gameId, userId);
+
+            if (!string.IsNullOrEmpty(paperWords))
+            {
+                // TODO: Locking
+                if (game.ColanderPapers == null)
+                {
+                    game.ColanderPapers = new List<PaperModel>();
+                }
+
+                if (!game.ColanderPapers.Any(p => p.AuthorUserId == userId && p.Words == paperWords))
+                {
+                    var newPaper = new PaperModel
+                    {
+                        Words = paperWords,
+                        AuthorUserId = userId
+                    };
+
+                    game.ColanderPapers.Add(newPaper);
+                }
+
+                // Save the updated game state to DB
+                Task task = SaveToStorage(game);
+
+                // TODO: Unlocking???
+            }
+            return game;
+        }
+
+
         private async Task<GameModel> LoadFromStorage(string gameId)
         {
             var container = await _storage.GetGameContainer();

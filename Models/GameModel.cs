@@ -14,14 +14,13 @@ namespace colander_game.Models
         {
             GameId = gameId.FormatGameId();
             CreatorId = creatorId.FormatGameId();
-            ActivePlayerId = "";
 
             Teams = new List<Team>();
-            ColanderPapers = new List<string>();
-            AllPapers = new List<string>();
-
-            // Players = new List<(string sessionId, string userName)>();
+            ColanderPapers = new List<PaperModel>();
+            PlayedPapers = new List<PaperModel>();
         }
+
+        public bool GameStarted { get; set; }
 
         [JsonPropertyName("id")]
         public string GameId { get; set; }
@@ -30,11 +29,11 @@ namespace colander_game.Models
 
         public string CreatorId { get; set; }
 
-        public string ActivePlayerId { get; set; }
+        public UserModel ActivePlayer { get; set; }
 
-        public List<string> ColanderPapers { get; set; }
+        public List<PaperModel> ColanderPapers { get; set; }
 
-        public List<string> AllPapers { get; set; }
+        public List<PaperModel> PlayedPapers { get; set; }
 
         public List<Team> Teams { get; set; }
     }

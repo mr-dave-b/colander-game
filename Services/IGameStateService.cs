@@ -8,5 +8,7 @@ namespace colander_game.Services
         Task<GameModel> GetGameAsync(string gameId, string userId);
 
         Task<GameModel> JoinTeamAsync(string gameId, string teamName, UserModel user);
+        
+        Task<GameModel> AddNewPaperAsync(string gameId, string paperWords, string userId);
     }
 }
