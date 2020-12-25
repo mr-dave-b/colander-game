@@ -99,6 +99,18 @@
                         End my turn
                     </button>
                 </form>
+                <br>
+                <progress value="@(60 - Model.Game.TimeLeft())" max="60" id="progressBar"></progress>
+                <script>
+                    var timeleft = @Model.Game.TimeLeft();
+                    var downloadTimer = setInterval(function(){
+                    if(timeleft <= 0){
+                        clearInterval(downloadTimer);
+                    }
+                    document.getElementById("progressBar").value = 60 - timeleft;
+                    timeleft -= 1;
+                    }, 1000);
+                </script>
             }
             else
             {
@@ -115,6 +127,18 @@
                         }
                     }
                 </h2>
+                <br>
+                <progress value="@(60 - Model.Game.TimeLeft())" max="60" id="progressBar"></progress>
+                <script>
+                    var timeleft = @Model.Game.TimeLeft();
+                    var downloadTimer = setInterval(function(){
+                    if(timeleft <= 0){
+                        clearInterval(downloadTimer);
+                    }
+                    document.getElementById("progressBar").value = 60 - timeleft;
+                    timeleft -= 1;
+                    }, 1000);
+                </script>
             }
         }
     }
