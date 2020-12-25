@@ -24,23 +24,33 @@ namespace colander_game.Models
 
         public int RoundNumber { get; set; }
 
-        public int LastTeamToPlay { get; set; }
+        public int NextTeamToPlayInt { get; set; }
 
-        public void EndPlayersGo(bool endOfRound = false)
+        public Team NextTeamToPlay => Teams[NextTeamToPlayInt];
+
+        public void EndPlayersGo(string teamName, bool endOfRound = false)
         {
             ActivePlayer = null;
             ActivePaper = null;
             if (!endOfRound)
             {
-                // Move play to the next team
-                LastTeamToPlay++;
-                if (LastTeamToPlay >= Teams.Count)
+                var currentTeamIndex = Teams.FindIndex(t => t.Name == teamName);
+                if (currentTeamIndex > -1)
                 {
-                    LastTeamToPlay = 0;
+                    // Move play to the next team
+                    currentTeamIndex++;
+
+                    // TODO: Skip team if it is empty
+                    if (currentTeamIndex >= Teams.Count)
+                    {
+                        currentTeamIndex = 0;
+                    }
+                    NextTeamToPlayInt = currentTeamIndex;
                 }
             }
         }
 
+        /*
         public string WhichTeamIsUp()
         {
             if (Teams == null)
@@ -71,7 +81,8 @@ namespace colander_game.Models
 
             return team.Name;
         }
-
+        */
+        
         [JsonPropertyName("id")]
         public string GameId { get; set; }
 
@@ -96,6 +107,10 @@ namespace colander_game.Models
                 return true;
             }
             if (Teams == null || Teams.Count < 2)
+            {
+                return false;
+            }
+            if (Teams.Any(t => t.Players == null || t.Players.Count == 0))
             {
                 return false;
             }

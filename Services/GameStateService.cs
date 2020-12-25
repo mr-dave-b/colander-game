@@ -194,17 +194,8 @@ namespace colander_game.Services
             }
             else
             {
-                if (game.CurrentTeam(user.UserId)?.Name == game.WhichTeamIsUp())
-                {
-                    // Start the first round
-                    game.RoundNumber = 1;
-                }
-                else
-                {
-                    // Player is on the wrong team - don't allow
-                    return game;
-                }
-
+                // Any player can start the game and go first
+                game.RoundNumber = 1;
             }
 
             game.ActivePlayer = user;
@@ -218,7 +209,7 @@ namespace colander_game.Services
             else
             {
                 // Round is finished - end users go and end teams go
-                game.EndPlayersGo(endOfRound: true);
+                game.EndPlayersGo(teamName: game.CurrentTeam(user.UserId)?.Name, endOfRound: true);
             }
 
             // Save the updated game state to DB
@@ -242,7 +233,7 @@ namespace colander_game.Services
             // TODO: Locking
 
             // Remove the active player and the active paper
-            game.EndPlayersGo();
+            game.EndPlayersGo(game.CurrentTeam(userId)?.Name);
 
             // Save the updated game state to DB
             Task task = SaveToStorage(game);
