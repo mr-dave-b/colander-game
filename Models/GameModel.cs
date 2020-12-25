@@ -26,7 +26,35 @@ namespace colander_game.Models
 
         public int NextTeamToPlayInt { get; set; }
 
+        [JsonIgnore]
         public Team NextTeamToPlay => Teams[NextTeamToPlayInt];
+        
+        [JsonPropertyName("id")]
+        public string GameId { get; set; }
+
+        public string PartitionId => "Beta";
+
+        public string CreatorId { get; set; }
+
+        public UserModel ActivePlayer { get; set; }
+
+        public PaperModel ActivePaper { get; set; }
+
+        public List<PaperModel> ColanderPapers { get; set; }
+
+        public List<PaperModel> PlayedPapers { get; set; }
+
+        public List<Team> Teams { get; set; }
+
+        public void StartTheGame(string teamName)
+        {
+            RoundNumber = 1;
+            var currentTeamIndex = Teams.FindIndex(t => t.Name == teamName);
+            if (currentTeamIndex > -1)
+            {
+                NextTeamToPlayInt = currentTeamIndex;
+            }
+        }
 
         public void EndPlayersGo(string teamName, bool endOfRound = false)
         {
@@ -49,56 +77,6 @@ namespace colander_game.Models
                 }
             }
         }
-
-        /*
-        public string WhichTeamIsUp()
-        {
-            if (Teams == null)
-            {
-                return "";
-            }
-
-            var nextTeamNum = LastTeamToPlay + 1;
-            Team team = null;
-            int goneRound = 0;
-            while (goneRound < 2)
-            {
-                if (Teams.Count <= nextTeamNum)
-                {
-                    goneRound++;
-                    nextTeamNum = 0;
-                    continue;
-                }
-
-                team = Teams[nextTeamNum];
-                if (team.Players == null || team.Players.Count == 0)
-                {
-                    nextTeamNum++;
-                    continue;
-                }
-                break;
-            }
-
-            return team.Name;
-        }
-        */
-        
-        [JsonPropertyName("id")]
-        public string GameId { get; set; }
-
-        public string PartitionId => "Beta";
-
-        public string CreatorId { get; set; }
-
-        public UserModel ActivePlayer { get; set; }
-
-        public PaperModel ActivePaper { get; set; }
-
-        public List<PaperModel> ColanderPapers { get; set; }
-
-        public List<PaperModel> PlayedPapers { get; set; }
-
-        public List<Team> Teams { get; set; }
 
         public bool GameCanStart()
         {

@@ -202,7 +202,7 @@ namespace colander_game.Services
             else
             {
                 // Any player can start the game and go first
-                game.RoundNumber = 1;
+                game.StartTheGame(game.CurrentTeam(user.UserId)?.Name);
             }
 
             game.ActivePlayer = user;
