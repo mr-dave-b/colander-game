@@ -127,13 +127,20 @@
 
             <br />
 
-            <form method="POST" action="/game/@Model.Game.GameId/getpaper">
-                When everyone has finished writing:<br/>
-                We are ready to start and I'm going to present first!
-                <button type="submit">
-                    Lets go!
-                </button>
-            </form>
+            @if (Model.Game.GameCanStart())
+            {
+                <form method="POST" action="/game/@Model.Game.GameId/getpaper">
+                    When everyone has finished writing:<br/>
+                    We are ready to start and I'm going to present first!
+                    <button type="submit">
+                        Lets go!
+                    </button>
+                </form>
+            }
+            else
+            {
+                <p><b>You need at least 2 pieces of paper per team to start the game.</b></p>
+            }
         }
     }
 

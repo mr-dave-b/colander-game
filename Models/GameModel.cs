@@ -38,5 +38,22 @@ namespace colander_game.Models
         public List<PaperModel> PlayedPapers { get; set; }
 
         public List<Team> Teams { get; set; }
+
+        public bool GameCanStart()
+        {
+            if (RoundNumber > 0)
+            {
+                return true;
+            }
+            if (Teams == null || Teams.Count < 2)
+            {
+                return false;
+            }
+            if (ColanderPapers == null || ColanderPapers.Count < Teams.Count*2)
+            {
+                return false;
+            }
+            return true;
+        }
     }
 }
