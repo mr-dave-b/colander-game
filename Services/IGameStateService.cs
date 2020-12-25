@@ -10,5 +10,9 @@ namespace colander_game.Services
         Task<GameModel> JoinTeamAsync(string gameId, string teamName, UserModel user);
         
         Task<GameModel> AddNewPaperAsync(string gameId, string paperWords, string userId);
+
+        Task<GameModel> DrawAPaper(string gameId, UserModel user);
+
+        Task<GameModel> EndPlayerTurn(string gameId, string userId);
     }
 }

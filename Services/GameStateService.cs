@@ -12,6 +12,8 @@ namespace colander_game.Services
 {
     public class GameStateService : IGameStateService
     {
+        static Random randomGen = new Random();
+
         private IStorageService _storage;
 
         public GameStateService(IStorageService storage)
@@ -93,13 +95,105 @@ namespace colander_game.Services
                 }
 
                 // Save the updated game state to DB
-                Task task = SaveToStorage(game);
+                await SaveToStorage(game);
 
                 // TODO: Unlocking???
             }
             return game;
         }
 
+        public async Task<GameModel> DrawAPaper(string gameId, UserModel user)
+        {
+            var game = await GetGameAsync(gameId, user.UserId);
+
+            if (game.ActivePlayer != null && game.ActivePlayer.UserId != user.UserId)
+            {
+                // Someone else is presenting! Don't allow this
+                return null;
+            }
+
+            // TODO: Locking
+            game.ActivePlayer = user;
+
+            if (game.RoundNumber > 0)
+            {
+                if (game.ColanderPapers.Count == 0)
+                {
+                    // The colander is empty - start a round by moving all the papers into the colander
+                    game.ColanderPapers.AddRange(game.PlayedPapers);
+                    game.PlayedPapers = new List<PaperModel>();
+                    game.RoundNumber++;
+                }
+                
+                if (game.ActivePaper != null)
+                {
+                    // There is already a paper drawn, remove from colander and score 1 point
+                    var found = game.ColanderPapers.RemoveAll(p => p.Words == game.ActivePaper.Words);
+                    if (found > 0)
+                    {
+                        if (game.PlayedPapers == null)
+                        {
+                            game.PlayedPapers = new List<PaperModel>();
+                        }
+                        game.PlayedPapers.Add(game.ActivePaper);
+                    }
+                    var team = game.Teams.FirstOrDefault(t => t.Players.Any(p => p.UserId == user.UserId));
+                    if (team != null)
+                    {
+                        team.Score += 1;
+                    }
+                }
+            }
+            else
+            {
+                // Start the first round
+                game.RoundNumber = 1;
+            }
+
+            if (game.ColanderPapers.Count > 0)
+            {
+                // Draw new paper at random
+                int r = randomGen.Next(game.ColanderPapers.Count);
+                game.ActivePaper = game.ColanderPapers[r];
+            }
+            else
+            {
+                // Round is finished - end users go
+                game.ActivePlayer = null;
+                game.ActivePaper = null;
+            }
+
+            // Save the updated game state to DB
+            Task task = SaveToStorage(game);
+
+            // TODO: Unlocking???
+
+            return game;
+        }
+
+        public async Task<GameModel> EndPlayerTurn(string gameId, string userId)
+        {
+            var game = await GetGameAsync(gameId, userId);
+
+            if (game.ActivePlayer == null || game.ActivePlayer.UserId != userId)
+            {
+                // Someone else is presenting! Don't allow this
+                return null;
+            }
+
+            // TODO: Locking
+
+            // Remove the active player and the active paper
+            game.ActivePlayer = null;
+            game.ActivePaper = null;
+
+            // Save the updated game state to DB
+            Task task = SaveToStorage(game);
+
+            // TODO: Unlocking???
+
+            return game;
+        }
 
         private async Task<GameModel> LoadFromStorage(string gameId)
         {

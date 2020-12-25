@@ -7,6 +7,10 @@
 <div class="text-center">
     <h1 class="display-4">Welcome @Model.User?.UserName</h1>
 
+    <div style="float: left; width: 400px;">
+        <img src="/media/colander-june-whitfield.jpg" width="400" />
+    </div>
+
     @if (string.IsNullOrWhiteSpace(Model.User?.UserName))
     {
         <p>Please enter your name</p>

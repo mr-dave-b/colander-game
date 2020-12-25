@@ -28,12 +28,17 @@ namespace colander_game.Controllers
             gameId = gameId.FormatGameId();
 
             var userId = _sessionService.GetUserId(Request, Response);
+            var user = await _sessionService.GetUserData(userId);
+            if (user?.UserName == null)
+            {
+                Redirect("/");
+            }
 
             var game = await _gameService.GetGameAsync(gameId, userId);
 
             return View(new GameRenderModel
             {
-                User = await _sessionService.GetUserData(userId),
+                User = user,
                 Game = game
             });
         }
@@ -61,6 +66,34 @@ namespace colander_game.Controllers
             var userId = _sessionService.GetUserId(Request, Response);
 
             var game = await _gameService.AddNewPaperAsync(gameId, newPaper, userId);
+
+            return Redirect($"/game/{gameId}");
+        }
+
+        [Route("game/{gameId}/getpaper")]
+        [HttpPost]
+        public async Task<IActionResult> GetPaper(string gameId)
+        {
+            gameId = gameId.FormatGameId();
+
+            var userId = _sessionService.GetUserId(Request, Response);
+            var user = await _sessionService.GetUserData(userId);
+
+            var game = await _gameService.DrawAPaper(gameId, user);
+
+            return Redirect($"/game/{gameId}");
+        }
+
+        [Route("game/{gameId}/endturn")]
+        [HttpPost]
+        public async Task<IActionResult> EndTurn(string gameId)
+        {
+            gameId = gameId.FormatGameId();
+
+            var userId = _sessionService.GetUserId(Request, Response);
+            //var user = await _sessionService.GetUserData(userId);
+
+            var game = await _gameService.EndPlayerTurn(gameId, userId);
 
             return Redirect($"/game/{gameId}");
         }

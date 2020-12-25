@@ -20,7 +20,7 @@ namespace colander_game.Models
             PlayedPapers = new List<PaperModel>();
         }
 
-        public bool GameStarted { get; set; }
+        public int RoundNumber { get; set; }
 
         [JsonPropertyName("id")]
         public string GameId { get; set; }
@@ -30,6 +30,8 @@ namespace colander_game.Models
         public string CreatorId { get; set; }
 
         public UserModel ActivePlayer { get; set; }
+
+        public PaperModel ActivePaper { get; set; }
 
         public List<PaperModel> ColanderPapers { get; set; }
 

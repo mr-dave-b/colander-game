@@ -1,4 +1,5 @@
 ﻿@model GameRenderModel;
+@using System.Linq;
 
 @{
     ViewData["Title"] = "Game Page!";
@@ -12,16 +13,103 @@
 <div class="text-center">
     <h1 class="display-4">Welcome to CG!</h1>
 
-    <p>@(Model.Game.ColanderPapers?.Count ?? 0) papers are in the colander
+    <p>
+
+    @if (Model.Game.ActivePaper != null)
+    {
+        <text>
+        @(Model.Game.ColanderPapers.Count - 1) papers are in the colander
+        <br>
+        and 1 in play
+        </text>
+    }
+    else
+    {
+        <text>
+        @(Model.Game.ColanderPapers?.Count ?? 0) papers are in the colander
+        </text>
+    }
     @if (Model.Game.PlayedPapers?.Count > 0)
     {
         <br />
         @Model.Game.PlayedPapers.Count
         <text> are currently on the floor</text>
     }
+
+    @if (Model.Game.RoundNumber == 0)
+    {
+        <br />
+        <text>
+            @(Model.Game.ColanderPapers?.Count(p => p.AuthorUserId == Model.User.UserId) ?? 0) papers were written by you
+        </text>
+    }
+
     </p>
 
-    @if (Model.Game.GameStarted)
+    @if (Model.Game.RoundNumber > 0)
+    {
+        <h2>Round @Model.Game.RoundNumber</h2>
+        @if (Model.Game.ColanderPapers?.Count == 0)
+        {
+            <p>
+                <img src="/media/colander-empty.jpg" width="300" />
+            </p>
+        }
+        @if (Model.CurrentTeam() == null)
+        {
+            <h2>You need to join a team if you want to play</h2>
+        }
+        else
+        {
+            @if (Model.Game.ActivePlayer == null)
+            {
+                <form method="POST" action="/game/@Model.Game.GameId/getpaper">
+                    I'm going to go next!
+                    <button type="submit">
+                        Lets play!
+                    </button>
+                </form>
+            }
+            else if (Model.Game.ActivePlayer.UserId == Model.User.UserId)
+            {
+                <div style="width: 400px; margin: auto; background-color: #fff740; border: 2px solid black; border-radius: 5px; padding: 20px;">
+                <h2>@Model.Game.ActivePaper.Words</h2>
+                </div>
+
+                <form method="POST" action="/game/@Model.Game.GameId/getpaper">
+                    <br>
+                    My team got it!
+                    <button type="submit" onclick="return confirm('Did they get it right?')">
+                        Draw the next paper
+                    </button>
+                </form>
+
+                <form method="POST" action="/game/@Model.Game.GameId/endturn">
+                    I give up or time ran out
+                    <button type="submit" onclick="return confirm('Are you sure you have finished?')">
+                        End my turn
+                    </button>
+                </form>
+            }
+            else
+            {
+                <h2>@Model.Game.ActivePlayer.UserName is presenting
+                    @if (Model.CurrentTeam() != null)
+                    {
+                        if (Model.CurrentTeam().Players.Any(p => p.UserId == Model.Game.ActivePlayer.UserId))
+                        {
+                            <b> to their team</b>
+                        }
+                        else
+                        {
+                            <text> to their team</text>
+                        }
+                    }
+                </h2>
+            }
+        }
+    }
+    else
     {
         @if (Model.CurrentTeam() == null)
         {
@@ -29,32 +117,24 @@
         }
         else
         {
-            
-            @using(Html.BeginForm())
-            {
+            <p>Write some words on a piece of paper: </p>
+            <form method="POST" action="/game/@Model.Game.GameId/addpaper">
+                <input type="text" name="NewPaper" placeholder="My fun words go here" />
                 <button type="submit">
-                    Draw the first paper!
+                    Add it to the colander!
                 </button>
+            </form>
+
+            <br />
+
+            <form method="POST" action="/game/@Model.Game.GameId/getpaper">
+                When everyone has finished writing:<br/>
+                We are ready to start and I'm going to present first!
                 <button type="submit">
-                    <em>Success</em>
-                    Draw the next paper!
+                    Lets go!
                 </button>
-                <button type="submit">
-                    <em>Time up/Give up</em>
-                    Put this paper back in
-                </button>
-            }
+            </form>
         }
-    }
-    else
-    {
-        <p>Write some words on a piece of paper: </p>
-        <form method="POST" action="/game/@Model.Game.GameId/addpaper">
-            <input type="text" name="NewPaper" placeholder="My fun words go here" />
-            <button type="submit">
-                Add it to the colander!
-            </button>
-        </form>
     }
 
 </div>
