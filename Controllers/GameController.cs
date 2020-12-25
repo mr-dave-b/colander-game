@@ -31,7 +31,7 @@ namespace colander_game.Controllers
             var user = await _sessionService.GetUserData(userId);
             if (string.IsNullOrWhiteSpace(user?.UserName))
             {
-                Redirect("/");
+                return Redirect("/");
             }
 
             var game = await _gameService.GetGameAsync(gameId, userId);
