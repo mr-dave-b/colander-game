@@ -120,6 +120,12 @@ namespace colander_game.Services
                 return null;
             }
 
+            if (!game.GameCanStart())
+            {
+                // Not enough teams or papers to start yet
+                return null;
+            }
+
             // TODO: Locking
             game.ActivePlayer = user;
 
