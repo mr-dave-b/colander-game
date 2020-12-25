@@ -10,7 +10,10 @@ namespace colander_game.Models
             Name = teamName;
             Score = 0;
             Players = new List<UserModel>();
-            Players.Add(firstPlayer);
+            if (firstPlayer != null)
+            {
+                Players.Add(firstPlayer);
+            }
         }
         public Team()
         {

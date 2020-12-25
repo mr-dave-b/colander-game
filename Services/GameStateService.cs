@@ -43,7 +43,7 @@ namespace colander_game.Services
         {
             var game = await GetGameAsync(gameId, user.SessionId);
 
-            if (string.IsNullOrEmpty(teamName))
+            if (string.IsNullOrWhiteSpace(teamName))
             {
                 // Ignore empty team name
                 return game;
@@ -56,6 +56,13 @@ namespace colander_game.Services
             var myTeam = game.Teams.FirstOrDefault(t => t.Players.Any(p => p.UserId == user.UserId));
             if (myTeam != null)
             {
+                // Player is already in a team
+                if (game.RoundNumber > 0)
+                {
+                    // Can't change team once the game has started
+                    return game;
+                }
+
                 // Remove player from current team
                 myTeam.Players.RemoveAll(x => x.UserId == user.UserId);
             }
@@ -73,7 +80,35 @@ namespace colander_game.Services
             }
 
             // Save the updated game state to DB
-            Task task = SaveToStorage(game);
+            await SaveToStorage(game);
+
+            // TODO: Unlocking???
+            return game;
+        }
+
+        public async Task<GameModel> DeleteTeamAsync(string gameId, string teamName, string userId)
+        {
+            var game = await GetGameAsync(gameId, userId);
+
+            if (string.IsNullOrWhiteSpace(teamName))
+            {
+                // Ignore empty team name
+                return game;
+            }
+
+            teamName = teamName.Trim();
+
+            // TODO: Locking
+
+            // Find team and delete if empty
+            var myTeam = game.Teams.FirstOrDefault(t => t.Name.Trim().ToUpperInvariant() == teamName.ToUpperInvariant());
+            if (myTeam != null)
+            {
+                game.Teams.Remove(myTeam);
+            }
+
+            // Save the updated game state to DB
+            await SaveToStorage(game);
 
             // TODO: Unlocking???
             return game;
