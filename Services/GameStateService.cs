@@ -205,13 +205,27 @@ namespace colander_game.Services
                 game.StartTheGame(game.CurrentTeam(user.UserId)?.Name);
             }
 
+            if (game.ActivePlayer == null)
+            {
+                // New player - start the timer
+                game.RoundStartTime = DateTime.UtcNow;
+            }
+
             game.ActivePlayer = user;
 
             if (game.ColanderPapers.Count > 0)
             {
-                // Draw new paper at random
-                int r = randomGen.Next(game.ColanderPapers.Count);
-                game.ActivePaper = game.ColanderPapers[r];
+                if (game.RoundStartTime.HasValue && game.RoundStartTime.Value.AddSeconds(70).CompareTo(DateTime.UtcNow) > 0)
+                {
+                    // Draw new paper at random
+                    int r = randomGen.Next(game.ColanderPapers.Count);
+                    game.ActivePaper = game.ColanderPapers[r];
+                }
+                else
+                {
+                    // Time is up - end users go
+                    game.EndPlayersGo(teamName: game.CurrentTeam(user.UserId)?.Name);
+                }
             }
             else
             {

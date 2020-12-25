@@ -24,6 +24,8 @@ namespace colander_game.Models
 
         public int RoundNumber { get; set; }
 
+        public DateTime? RoundStartTime { get; set; }
+
         public int NextTeamToPlayInt { get; set; }
 
         [JsonIgnore]
@@ -60,6 +62,7 @@ namespace colander_game.Models
         {
             ActivePlayer = null;
             ActivePaper = null;
+            RoundStartTime = null;
             if (!endOfRound)
             {
                 var currentTeamIndex = Teams.FindIndex(t => t.Name == teamName);
