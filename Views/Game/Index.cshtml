@@ -63,12 +63,21 @@
         {
             @if (Model.Game.ActivePlayer == null)
             {
-                <form method="POST" action="/game/@Model.Game.GameId/getpaper">
-                    I'm going to go next!
-                    <button type="submit">
-                        Lets play!
-                    </button>
-                </form>
+                @if (Model.CurrentTeam()?.Name == Model.Game.WhichTeamIsUp())
+                {
+                    <form method="POST" action="/game/@Model.Game.GameId/getpaper">
+                        I'm going to go next!
+                        <button type="submit">
+                            Lets play!
+                        </button>
+                    </form>
+                }
+                else
+                {
+                    <text>
+                        Team @Model.Game.WhichTeamIsUp()
+                    </text>
+                }
             }
             else if (Model.Game.ActivePlayer.UserId == Model.User.UserId)
             {
@@ -131,10 +140,22 @@
             {
                 <form method="POST" action="/game/@Model.Game.GameId/getpaper">
                     When everyone has finished writing:<br/>
-                    We are ready to start and I'm going to present first!
-                    <button type="submit">
-                        Lets go!
-                    </button>
+                    @if (Model.Game.Teams.Count > 0 && Model.CurrentTeam() == Model.Game.Teams[0])
+                    {
+                        <text>
+                            We are ready to start and I'm going to present first!
+                            <button type="submit">
+                                Lets go!
+                            </button>
+                        </text>
+                    }
+                    else
+                    {
+                        <text>
+                            Somebody on the first team needs to start
+                        </text>
+                    }
+
                 </form>
             }
             else

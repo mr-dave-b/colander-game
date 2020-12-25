@@ -11,7 +11,7 @@ namespace colander_game.Models
 
         public Team CurrentTeam()
         {
-            return Game?.Teams?.FirstOrDefault(t => t.Players != null && t.Players.Any(p => p.UserId == User?.UserId));
+            return Game?.CurrentTeam(User?.UserId);
         }
     }
 }
