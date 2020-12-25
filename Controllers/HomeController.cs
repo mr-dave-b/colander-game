@@ -21,12 +21,13 @@ namespace colander_game.Controllers
 
         public async Task<IActionResult> Restart()
         {
+            // Set user data to be blank
             var userId = _sessionService.GetUserId(Request, Response);
             var userModel = await _sessionService.GetUserData(userId);
             userModel.UserName = null;
             await _sessionService.SaveUserData(userModel);
             
-            return await Index();
+            return Redirect("/");
         }
 
         public async Task<IActionResult> Index()
