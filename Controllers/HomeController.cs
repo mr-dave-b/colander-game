@@ -19,6 +19,19 @@ namespace colander_game.Controllers
             _sessionService = sessionService;
         }
 
+        public async Task<IActionResult> Restart()
+        {
+            var userId = _sessionService.GetUserId(Request, Response);
+            var userModel = await _sessionService.GetUserData(userId);
+            userModel.UserName = null;
+            await _sessionService.SaveUserData(userModel);
+            
+            return View(new GameRenderModel
+            {
+                    User = userModel
+            });
+        }
+
         public async Task<IActionResult> Index()
         {
             var userId = _sessionService.GetUserId(Request, Response);

@@ -61,7 +61,7 @@ namespace colander_game.Services
         // Gets/created session ID cookie
         string GetUserId(HttpRequest request, HttpResponse response);
         
-        Task SaveUserData(UserModel userName);
+        Task SaveUserData(UserModel user);
 
         Task<UserModel> GetUserData(string sessionId);
     }
