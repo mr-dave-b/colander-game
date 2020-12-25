@@ -43,6 +43,14 @@ namespace colander_game.Services
         {
             var game = await GetGameAsync(gameId, user.SessionId);
 
+            if (string.IsNullOrEmpty(teamName))
+            {
+                // Ignore empty team name
+                return game;
+            }
+
+            teamName = teamName.Trim();
+
             // TODO: Locking
 
             var myTeam = game.Teams.FirstOrDefault(t => t.Players.Any(p => p.UserId == user.UserId));
@@ -51,9 +59,9 @@ namespace colander_game.Services
                 // Remove player from current team
                 myTeam.Players.RemoveAll(x => x.UserId == user.UserId);
             }
-            // Add player to the new team
 
-            myTeam = game.Teams.FirstOrDefault(t => t.Name == teamName);
+            // Add player to the new team
+            myTeam = game.Teams.FirstOrDefault(t => t.Name.Trim().ToUpperInvariant() == teamName.ToUpperInvariant());
             if (myTeam != null)
             {
                 myTeam.Players.Add(user);
