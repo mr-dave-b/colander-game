@@ -57,6 +57,19 @@ namespace colander_game.Controllers
             return Redirect($"/game/{gameId}");
         }
 
+        [Route("game/{gameId}/deleteteam")]
+        [HttpPost]
+        public async Task<IActionResult> DeleteTeam(string gameId, [FromForm] string teamName)
+        {
+            gameId = gameId.FormatGameId();
+
+            var userId = _sessionService.GetUserId(Request, Response);
+
+            var game = await _gameService.DeleteTeamAsync(gameId, teamName, userId);
+
+            return Redirect($"/game/{gameId}");
+        }
+
         [Route("game/{gameId}/addpaper")]
         [HttpPost]
         public async Task<IActionResult> AddPaper(string gameId, [FromForm] string newPaper)

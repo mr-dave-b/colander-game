@@ -179,27 +179,38 @@
                     </ul>
 
                     <!-- br -->
-                    @if (Model.CurrentTeam() != team)
+                    @if (Model.Game.RoundNumber == 0 || Model.CurrentTeam() == null)
                     {
-                        @using(Html.BeginForm("JoinTeam", "Game", new { gameId = Model.Game.GameId }, FormMethod.Post))
+                        if (Model.CurrentTeam() != team)
                         {
-                            <input type="hidden" name="teamName" value="@team.Name" />
-                            <button type="submit">
-                                Join @team.Name
-                            </button>
+                            @using(Html.BeginForm("JoinTeam", "Game", new { gameId = Model.Game.GameId }, FormMethod.Post))
+                            {
+                                <input type="hidden" name="teamName" value="@team.Name" />
+                                <button type="submit">
+                                    Join team @team.Name
+                                </button>
+                            }
+                            @using(Html.BeginForm("DeleteTeam", "Game", new { gameId = Model.Game.GameId }, FormMethod.Post))
+                            {
+                                <input type="hidden" name="teamName" value="@team.Name" />
+                                <button type="submit">
+                                    Delete empty team @team.Name
+                                </button>
+                            }
                         }
                     }
                 }
-
             </p>
             
         }
     }
-
-    <form method="POST" action="/game/@Model.Game.GameId/jointeam">
-        <input type="text" name="TeamName" placeholder="New team" />
-        <button type="submit">
-            Create new team
-        </button>
-    </form>
+    @if (Model.Game.RoundNumber == 0 || Model.CurrentTeam() == null)
+    {
+        <form method="POST" action="/game/@Model.Game.GameId/jointeam">
+            <input type="text" name="TeamName" placeholder="New team" />
+            <button type="submit">
+                Create new team
+            </button>
+        </form>
+    }
 </div>

@@ -18,6 +18,7 @@ namespace colander_game.Models
             Teams = new List<Team>();
             ColanderPapers = new List<PaperModel>();
             PlayedPapers = new List<PaperModel>();
+            Teams.Add(new Team("Synergy", null));
         }
 
         public int RoundNumber { get; set; }
