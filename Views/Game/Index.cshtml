@@ -202,12 +202,15 @@
                                     Join team @team.Name
                                 </button>
                             }
-                            @using(Html.BeginForm("DeleteTeam", "Game", new { gameId = Model.Game.GameId }, FormMethod.Post))
+                            @if (team.Players == null || team.Players.Count == 0)
                             {
-                                <input type="hidden" name="teamName" value="@team.Name" />
-                                <button type="submit">
-                                    Delete empty team @team.Name
-                                </button>
+                                @using(Html.BeginForm("DeleteTeam", "Game", new { gameId = Model.Game.GameId }, FormMethod.Post))
+                                {
+                                    <input type="hidden" name="teamName" value="@team.Name" />
+                                    <button type="submit">
+                                        Delete empty team @team.Name
+                                    </button>
+                                }
                             }
                         }
                     }

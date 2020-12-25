@@ -96,6 +96,12 @@ namespace colander_game.Services
                 return game;
             }
 
+            if (game.RoundNumber > 0)
+            {
+                // Can't delete team when game has started
+                return game;
+            }
+
             teamName = teamName.Trim();
 
             // TODO: Locking
@@ -104,6 +110,7 @@ namespace colander_game.Services
             var myTeam = game.Teams.FirstOrDefault(t => t.Name.Trim().ToUpperInvariant() == teamName.ToUpperInvariant());
             if (myTeam != null)
             {
+                // TODO: Don't delete a team with platers?
                 game.Teams.Remove(myTeam);
             }
 
