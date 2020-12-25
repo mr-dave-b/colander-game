@@ -29,7 +29,7 @@ namespace colander_game.Controllers
 
             var userId = _sessionService.GetUserId(Request, Response);
             var user = await _sessionService.GetUserData(userId);
-            if (user?.UserName == null)
+            if (string.IsNullOrWhiteSpace(user?.UserName))
             {
                 Redirect("/");
             }
