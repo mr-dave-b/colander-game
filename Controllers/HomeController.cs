@@ -26,10 +26,7 @@ namespace colander_game.Controllers
             userModel.UserName = null;
             await _sessionService.SaveUserData(userModel);
             
-            return View(new GameRenderModel
-            {
-                    User = userModel
-            });
+            return await Index();
         }
 
         public async Task<IActionResult> Index()
