@@ -106,5 +106,19 @@ namespace colander_game.Models
         {
             return Teams?.FirstOrDefault(t => t.Players != null && t.Players.Any(p => p.UserId == userId));
         }
+
+        public int TimeLeft()
+        {
+            if (RoundStartTime == null)
+            {
+                return 0;
+            }
+            int timeLeft = (int)RoundStartTime.Value.AddSeconds(60).Subtract(DateTime.UtcNow).TotalSeconds;
+            if (timeLeft < 1)
+            {
+                return 0;
+            }
+            return timeLeft;
+        }
     }
 }
