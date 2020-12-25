@@ -55,16 +55,17 @@
                 <img src="/media/colander-empty.jpg" width="300" />
             </p>
         }
+
+        <p><b>
+            Team @Model.Game.NextTeamToPlay?.Name are up
+        </b></p>
+
         @if (Model.UsersTeam() == null)
         {
             <h2>You need to join a team if you want to play</h2>
         }
         else
         {
-            <p><b>
-                Team @Model.Game.NextTeamToPlay?.Name are up
-            </b></p>
-
             @if (Model.Game.ActivePlayer == null)
             {
                 @if (Model.UsersTeam()?.Name == Model.Game.NextTeamToPlay?.Name)
@@ -112,34 +113,35 @@
                     }, 1000);
                 </script>
             }
-            else
-            {
-                <h2>@Model.Game.ActivePlayer.UserName is presenting
-                    @if (Model.UsersTeam() != null)
+        }
+
+        if (Model.Game.ActivePlayer != null && Model.Game.ActivePlayer.UserId != Model.User.UserId)
+        {
+            <h2>@Model.Game.ActivePlayer.UserName is presenting
+                @if (Model.UsersTeam() != null)
+                {
+                    if (Model.UsersTeam().Players.Any(p => p.UserId == Model.Game.ActivePlayer.UserId))
                     {
-                        if (Model.UsersTeam().Players.Any(p => p.UserId == Model.Game.ActivePlayer.UserId))
-                        {
-                            <b> to you</b>
-                        }
-                        else
-                        {
-                            <text> to their team</text>
-                        }
+                        <b> to you</b>
                     }
-                </h2>
-                <br>
-                <progress value="@(60 - Model.Game.TimeLeft())" max="60" id="progressBar"></progress>
-                <script>
-                    var timeleft = @Model.Game.TimeLeft();
-                    var downloadTimer = setInterval(function(){
-                    if(timeleft <= 0){
-                        clearInterval(downloadTimer);
+                    else
+                    {
+                        <text> to their team</text>
                     }
-                    document.getElementById("progressBar").value = 60 - timeleft;
-                    timeleft -= 1;
-                    }, 1000);
-                </script>
-            }
+                }
+            </h2>
+            <br>
+            <progress value="@(60 - Model.Game.TimeLeft())" max="60" id="progressBar"></progress>
+            <script>
+                var timeleft = @Model.Game.TimeLeft();
+                var downloadTimer = setInterval(function(){
+                if(timeleft <= 0){
+                    clearInterval(downloadTimer);
+                }
+                document.getElementById("progressBar").value = 60 - timeleft;
+                timeleft -= 1;
+                }, 1000);
+            </script>
         }
     }
     else
