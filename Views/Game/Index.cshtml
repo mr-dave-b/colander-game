@@ -55,15 +55,19 @@
                 <img src="/media/colander-empty.jpg" width="300" />
             </p>
         }
-        @if (Model.CurrentTeam() == null)
+        @if (Model.UsersTeam() == null)
         {
             <h2>You need to join a team if you want to play</h2>
         }
         else
         {
+            <p><b>
+                Team @Model.Game.NextTeamToPlay?.Name are up
+            </b></p>
+
             @if (Model.Game.ActivePlayer == null)
             {
-                @if (Model.CurrentTeam()?.Name == Model.Game.NextTeamToPlay?.Name)
+                @if (Model.UsersTeam()?.Name == Model.Game.NextTeamToPlay?.Name)
                 {
                     <form method="POST" action="/game/@Model.Game.GameId/getpaper">
                         I'm going to go next!
@@ -71,12 +75,6 @@
                             Lets play!
                         </button>
                     </form>
-                }
-                else
-                {
-                    <text>
-                        Team @Model.Game.NextTeamToPlay?.Name are up next
-                    </text>
                 }
             }
             else if (Model.Game.ActivePlayer.UserId == Model.User.UserId)
@@ -103,11 +101,11 @@
             else
             {
                 <h2>@Model.Game.ActivePlayer.UserName is presenting
-                    @if (Model.CurrentTeam() != null)
+                    @if (Model.UsersTeam() != null)
                     {
-                        if (Model.CurrentTeam().Players.Any(p => p.UserId == Model.Game.ActivePlayer.UserId))
+                        if (Model.UsersTeam().Players.Any(p => p.UserId == Model.Game.ActivePlayer.UserId))
                         {
-                            <b> to their team</b>
+                            <b> to you</b>
                         }
                         else
                         {
@@ -120,7 +118,7 @@
     }
     else
     {
-        @if (Model.CurrentTeam() == null)
+        @if (Model.UsersTeam() == null)
         {
             <h2>You need to join a team if you want to play</h2>
         }
@@ -191,9 +189,9 @@
                     </ul>
 
                     <!-- br -->
-                    @if (Model.Game.RoundNumber == 0 || Model.CurrentTeam() == null)
+                    @if (Model.Game.RoundNumber == 0 || Model.UsersTeam() == null)
                     {
-                        if (Model.CurrentTeam() != team)
+                        if (Model.UsersTeam() != team)
                         {
                             @using(Html.BeginForm("JoinTeam", "Game", new { gameId = Model.Game.GameId }, FormMethod.Post))
                             {
@@ -219,7 +217,7 @@
             
         }
     }
-    @if (Model.Game.RoundNumber == 0 || Model.CurrentTeam() == null)
+    @if (Model.Game.RoundNumber == 0 || Model.UsersTeam() == null)
     {
         <form method="POST" action="/game/@Model.Game.GameId/jointeam">
             <input type="text" name="TeamName" placeholder="New team" />

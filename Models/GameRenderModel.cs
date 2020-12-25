@@ -9,7 +9,7 @@ namespace colander_game.Models
         public UserModel User { get; set; }
         public GameModel Game { get; set ; }
 
-        public Team CurrentTeam()
+        public Team UsersTeam()
         {
             return Game?.CurrentTeam(User?.UserId);
         }
