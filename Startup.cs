@@ -38,6 +38,8 @@ namespace colander_game
             services.AddScoped<IGameStateService, GameStateService>();
             services.AddSingleton<IStorageService, StorageService>();
 
+            services.AddApplicationInsightsTelemetry();
+            
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1); //.Version_2_2);
         }
 
