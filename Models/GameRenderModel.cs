@@ -33,5 +33,18 @@ namespace colander_game.Models
         {
             return Game?.Teams?.Sum(t => t.Players.Count(p => !p.Ready)) ?? 0;
         }
+
+        public bool AutoRefreshPage()
+        {
+            if (Game?.RoundNumber == 0 && UserIsReady())
+            {
+                return true;
+            }
+            if (Game?.RoundNumber > 0 && (Game.ActivePlayer == null || Game.ActivePlayer.UserId != User.UserId))
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }
