@@ -5,11 +5,11 @@ namespace colander_game.Models
 {
     public class Team
     {
-        public Team(string teamName, UserModel firstPlayer)
+        public Team(string teamName, Player firstPlayer)
         {
             Name = teamName;
             Score = 0;
-            Players = new List<UserModel>();
+            Players = new List<Player>();
             if (firstPlayer != null)
             {
                 Players.Add(firstPlayer);
@@ -23,6 +23,6 @@ namespace colander_game.Models
 
         public int Score { get; set; }
         
-        public List<UserModel> Players { get; set; }
+        public List<Player> Players { get; set; }
     }
 }

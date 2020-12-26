@@ -16,5 +16,7 @@ namespace colander_game.Services
         Task<GameModel> DrawAPaper(string gameId, UserModel user);
 
         Task<GameModel> EndPlayerTurn(string gameId, string userId);
+
+        Task<GameModel> SetPlayerReady(string gameId, string userId, bool ready = true);     
     }
 }

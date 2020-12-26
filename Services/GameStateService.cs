@@ -69,13 +69,14 @@ namespace colander_game.Services
 
             // Add player to the new team
             myTeam = game.Teams.FirstOrDefault(t => t.Name.Trim().ToUpperInvariant() == teamName.ToUpperInvariant());
+            var player = new Player(user);
             if (myTeam != null)
             {
-                myTeam.Players.Add(user);
+                myTeam.Players.Add(player);
             }
             else
             {
-                myTeam = new Team(teamName, user);
+                myTeam = new Team(teamName, player);
                 game.Teams.Add(myTeam);
             }
 
@@ -275,6 +276,27 @@ namespace colander_game.Services
 
             // TODO: Unlocking???
 
+            return game;
+        }
+
+        public async Task<GameModel> SetPlayerReady(string gameId, string userId, bool ready = true)
+        {
+            var game = await GetGameAsync(gameId, userId);
+
+            if (game.RoundNumber == 0)
+            {
+                // TODO: Locking
+
+                var team = game.CurrentTeam(userId);
+                if (team != null)
+                {
+                    var player = team.Players.First(p => p.UserId == userId);
+                    player.Ready = ready;
+
+                    Task task = SaveToStorage(game);
+                    // TODO: Unlocking???
+                }
+            }
             return game;
         }
 
