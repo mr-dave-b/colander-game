@@ -69,6 +69,7 @@
             if (Model.Game.GameOver())
             {
                 <p><b>Game over</b></p>
+            }
             else
             {
                 if (Model.Game.ActivePlayer == null)
@@ -76,7 +77,7 @@
                     if (Model.UsersTeam()?.Name == Model.Game.NextTeamToPlay?.Name)
                     {
                         <form method="POST" action="/game/@Model.Game.GameId/getpaper">
-                            I'm going to go next!
+                            I&apos;m going to go next!
                             <button type="submit">
                                 Lets play!
                             </button>
@@ -173,7 +174,7 @@
                 <form method="POST" action="/game/@Model.Game.GameId/getpaper">
                     When everyone has finished writing:<br/>
                     <text>
-                        We are ready to start and I'm going to present first!
+                        We are ready to start and I&apos;m going to present first!
                         <button type="submit">
                             Lets go!
                         </button>
