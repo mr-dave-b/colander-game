@@ -190,16 +190,19 @@
 
             @if (Model.Game.GameCanStart())
             {
-                <p>@Model.ReadyPlayersCount() players set as ready, @Model.NotReadyPlayersCount() are not</p>
-                <form method="POST" action="/game/@Model.Game.GameId/getpaper">
-                    When everyone has finished writing:<br/>
-                    <text>
-                        Start the game - I&apos;m going to present first!
-                        <button type="submit">
-                            Lets go!
-                        </button>
-                    </text>
-                </form>
+                @if (Model.UserIsReady())
+                {
+                    <p>@Model.ReadyPlayersCount() players set as ready, @Model.NotReadyPlayersCount() are not</p>
+                    <form method="POST" action="/game/@Model.Game.GameId/getpaper">
+                        When everyone has finished writing:<br/>
+                        <text>
+                            Start the game - I&apos;m going to present first!
+                            <button type="submit">
+                                Lets go!
+                            </button>
+                        </text>
+                    </form>
+                }
             }
             else
             {
@@ -244,7 +247,7 @@
                     </ul>
 
                     <!-- br -->
-                    @if (Model.Game.RoundNumber == 0 || Model.UsersTeam() == null)
+                    @if ((Model.Game.RoundNumber == 0 && !Model.UserIsReady()) || Model.UsersTeam() == null)
                     {
                         if (Model.UsersTeam() != team)
                         {
@@ -272,7 +275,7 @@
             
         }
     }
-    @if (Model.Game.RoundNumber == 0 || Model.UsersTeam() == null)
+    @if ((Model.Game.RoundNumber == 0 && !Model.UserIsReady()) || Model.UsersTeam() == null)
     {
         <form method="POST" action="/game/@Model.Game.GameId/jointeam">
             <input type="text" name="TeamName" placeholder="New team" />
