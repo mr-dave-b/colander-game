@@ -170,16 +170,36 @@ namespace colander_game.Services
 
             // TODO: Locking
 
-            if (game.RoundNumber > 0)
+            if (game.RoundNumber == 0)
             {
-                if (game.ColanderPapers.Count == 0)
-                {
-                    // The colander is empty - start a round by moving all the papers into the colander
-                    game.ColanderPapers.AddRange(game.PlayedPapers);
-                    game.PlayedPapers = new List<PaperModel>();
-                    game.RoundNumber++;
-                }
-                
+                // Any player can start the game and go first
+                game.StartTheGame(game.CurrentTeam(user.UserId)?.Name);
+            }
+
+            if (game.ActivePlayer == null)
+            {
+                // New player - start the timer
+                game.RoundStartTime = DateTime.UtcNow;
+            }
+
+            game.ActivePlayer = user;
+
+            if (game.ColanderPapers.Count == 0)
+            {
+                // The colander is empty - start a round by moving all the papers into the colander
+                game.ColanderPapers.AddRange(game.PlayedPapers);
+                game.PlayedPapers = new List<PaperModel>();
+                game.ActivePaper = null;
+                game.RoundNumber++;
+            }
+            
+            if (game.RoundStartTime.HasValue && game.RoundStartTime.Value.AddSeconds(70).CompareTo(DateTime.UtcNow) > 0)
+            {
+                // Outside 70 seconds - can't score a point or draw a paper
+                game.EndPlayersGo(teamName: game.CurrentTeam(user.UserId)?.Name);
+            }
+            else
+            {
                 if (game.ActivePaper != null)
                 {
                     // There is already a paper drawn, remove from colander and score 1 point
@@ -198,39 +218,26 @@ namespace colander_game.Services
                         team.Score += 1;
                     }
                 }
-            }
-            else
-            {
-                // Any player can start the game and go first
-                game.StartTheGame(game.CurrentTeam(user.UserId)?.Name);
-            }
 
-            if (game.ActivePlayer == null)
-            {
-                // New player - start the timer
-                game.RoundStartTime = DateTime.UtcNow;
-            }
-
-            game.ActivePlayer = user;
-
-            if (game.ColanderPapers.Count > 0)
-            {
-                if (game.RoundStartTime.HasValue && game.RoundStartTime.Value.AddSeconds(70).CompareTo(DateTime.UtcNow) > 0)
+                if (game.ColanderPapers.Count > 0)
                 {
-                    // Draw new paper at random
-                    int r = randomGen.Next(game.ColanderPapers.Count);
-                    game.ActivePaper = game.ColanderPapers[r];
+                    if (game.RoundStartTime.HasValue && game.RoundStartTime.Value.AddSeconds(60).CompareTo(DateTime.UtcNow) > 0)
+                    {
+                        // Draw new paper at random
+                        int r = randomGen.Next(game.ColanderPapers.Count);
+                        game.ActivePaper = game.ColanderPapers[r];
+                    }
+                    else
+                    {
+                        // Time is up - end users go
+                        game.EndPlayersGo(teamName: game.CurrentTeam(user.UserId)?.Name);
+                    }
                 }
                 else
                 {
-                    // Time is up - end users go
-                    game.EndPlayersGo(teamName: game.CurrentTeam(user.UserId)?.Name);
+                    // Round is finished - end users go and end teams go
+                    game.EndPlayersGo(teamName: game.CurrentTeam(user.UserId)?.Name, endOfRound: true);
                 }
-            }
-            else
-            {
-                // Round is finished - end users go and end teams go
-                game.EndPlayersGo(teamName: game.CurrentTeam(user.UserId)?.Name, endOfRound: true);
             }
 
             // Save the updated game state to DB
