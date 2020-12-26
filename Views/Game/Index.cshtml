@@ -83,6 +83,7 @@
                             </button>
                         </form>
                     }
+                    // TODO: Reload function 15 secs
                 }
                 else if (Model.Game.ActivePlayer.UserId == Model.User.UserId)
                 {
@@ -149,6 +150,8 @@
                 timeleft -= 1;
                 }, 1000);
             </script>
+
+            // TODO: Reload function 15 secs
         }
     }
     else
@@ -159,22 +162,42 @@
         }
         else
         {
-            <p>Write some words on a piece of paper: </p>
-            <form method="POST" action="/game/@Model.Game.GameId/addpaper">
-                <input type="text" name="NewPaper" placeholder="My fun words go here" />
-                <button type="submit">
-                    Add it to the colander!
-                </button>
-            </form>
+            @if (Model.UserIsReady())
+            {
+                <p>You are ready and waiting for the game to start</p>
+                <br />
+                <form method="POST" action="/game/@Model.Game.GameId/notready">
+                    <button type="submit">
+                        Actually, I&apos;m not ready!
+                    </button>
+                </form>
+            }
+            else
+            {
+                <p>Write some words on a piece of paper: </p>
+                <form method="POST" action="/game/@Model.Game.GameId/addpaper">
+                    <input type="text" name="NewPaper" placeholder="My fun words go here" />
+                    <button type="submit">
+                        Add it to the colander
+                    </button>
+                </form>
+                <br />
+                <form method="POST" action="/game/@Model.Game.GameId/ready">
+                    <button type="submit">
+                        OK I&apos;m ready to play!
+                    </button>
+                </form>
+            }
 
             <br />
 
             @if (Model.Game.GameCanStart())
             {
+                <p>@Model.ReadyPlayersCount() players set as ready, @Model.NotReadyPlayersCount() are not</p>
                 <form method="POST" action="/game/@Model.Game.GameId/getpaper">
                     When everyone has finished writing:<br/>
                     <text>
-                        We are ready to start and I&apos;m going to present first!
+                        Start the game - I&apos;m going to present first!
                         <button type="submit">
                             Lets go!
                         </button>

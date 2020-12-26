@@ -110,5 +110,25 @@ namespace colander_game.Controllers
 
             return Redirect($"/game/{gameId}");
         }
+
+        [Route("game/{gameId}/ready")]
+        [HttpPost]
+        public async Task<IActionResult> Ready(string gameId)
+        {
+            gameId = gameId.FormatGameId();
+            var userId = _sessionService.GetUserId(Request, Response);
+            await _gameService.SetPlayerReady(gameId, userId);
+            return Redirect($"/game/{gameId}");
+        }
+
+        [Route("game/{gameId}/notready")]
+        [HttpPost]
+        public async Task<IActionResult> NotReady(string gameId)
+        {
+            gameId = gameId.FormatGameId();
+            var userId = _sessionService.GetUserId(Request, Response);
+            await _gameService.SetPlayerReady(gameId, userId, ready: false);
+            return Redirect($"/game/{gameId}");
+        }
     }
 }
