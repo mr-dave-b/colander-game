@@ -155,6 +155,7 @@ namespace colander_game.Services
         public async Task<GameModel> DrawAPaper(string gameId, UserModel user)
         {
             var game = await GetGameAsync(gameId, user.UserId);
+            DateTime nowUtc = DateTime.UtcNow;
 
             if (game.ActivePlayer != null && game.ActivePlayer.UserId != user.UserId)
             {
@@ -162,9 +163,9 @@ namespace colander_game.Services
                 return null;
             }
 
-            if (!game.GameCanStart())
+            if (!game.GameCanStart() || game.GameOver())
             {
-                // Not enough teams or papers to start yet
+                // Can't start yet or game over
                 return null;
             }
 
@@ -179,7 +180,7 @@ namespace colander_game.Services
             if (game.ActivePlayer == null)
             {
                 // New player - start the timer
-                game.RoundStartTime = DateTime.UtcNow;
+                game.RoundStartTime = nowUtc;
             }
 
             game.ActivePlayer = user;
@@ -193,7 +194,7 @@ namespace colander_game.Services
                 game.RoundNumber++;
             }
             
-            if (game.RoundStartTime.HasValue && game.RoundStartTime.Value.AddSeconds(70).CompareTo(DateTime.UtcNow) > 0)
+            if (game.RoundStartTime.HasValue && game.RoundStartTime.Value.AddSeconds(70).CompareTo(nowUtc) < 0)
             {
                 // Outside 70 seconds - can't score a point or draw a paper
                 game.EndPlayersGo(teamName: game.CurrentTeam(user.UserId)?.Name);
@@ -251,6 +252,12 @@ namespace colander_game.Services
         public async Task<GameModel> EndPlayerTurn(string gameId, string userId)
         {
             var game = await GetGameAsync(gameId, userId);
+
+            if (!game.GameCanStart() || game.GameOver())
+            {
+                // Can't start yet or game over
+                return null;
+            }
 
             if (game.ActivePlayer == null || game.ActivePlayer.UserId != userId)
             {
