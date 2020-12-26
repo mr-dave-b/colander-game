@@ -102,6 +102,11 @@ namespace colander_game.Models
             return true;
         }
 
+        public bool GameOver()
+        {
+            return (RoundNumber >= 3 && ColanderPapers != null && ColanderPapers.Count == 0);
+        }
+
         public Team CurrentTeam(string userId)
         {
             return Teams?.FirstOrDefault(t => t.Players != null && t.Players.Any(p => p.UserId == userId));

@@ -66,52 +66,58 @@
         }
         else
         {
-            @if (Model.Game.ActivePlayer == null)
+            if (Model.Game.GameOver())
             {
-                @if (Model.UsersTeam()?.Name == Model.Game.NextTeamToPlay?.Name)
+                <p><b>Game over</b></p>
+            else
+            {
+                if (Model.Game.ActivePlayer == null)
                 {
+                    if (Model.UsersTeam()?.Name == Model.Game.NextTeamToPlay?.Name)
+                    {
+                        <form method="POST" action="/game/@Model.Game.GameId/getpaper">
+                            I'm going to go next!
+                            <button type="submit">
+                                Lets play!
+                            </button>
+                        </form>
+                    }
+                }
+                else if (Model.Game.ActivePlayer.UserId == Model.User.UserId)
+                {
+                    <div style="width: 400px; margin: auto; background-color: #fff740; border: 2px solid black; border-radius: 5px; padding: 20px;">
+                    <h2>@Model.Game.ActivePaper.Words</h2>
+                    </div>
+
                     <form method="POST" action="/game/@Model.Game.GameId/getpaper">
-                        I'm going to go next!
-                        <button type="submit">
-                            Lets play!
+                        <br>
+                        We got it!
+                        <br/>
+                        <button type="submit" onclick="return confirm('Did your team get it right?')">
+                            Throw paper on the floor
                         </button>
                     </form>
-                }
-            }
-            else if (Model.Game.ActivePlayer.UserId == Model.User.UserId)
-            {
-                <div style="width: 400px; margin: auto; background-color: #fff740; border: 2px solid black; border-radius: 5px; padding: 20px;">
-                <h2>@Model.Game.ActivePaper.Words</h2>
-                </div>
-
-                <form method="POST" action="/game/@Model.Game.GameId/getpaper">
+                    <br/>
+                    <form method="POST" action="/game/@Model.Game.GameId/endturn">
+                        I give up or time ran out
+                        <br/>
+                        <button type="submit" onclick="return confirm('Are you sure you have finished?')">
+                            End my turn
+                        </button>
+                    </form>
                     <br>
-                    We got it!
-                    <br/>
-                    <button type="submit" onclick="return confirm('Did your team get it right?')">
-                        Throw paper on the floor
-                    </button>
-                </form>
-                <br/>
-                <form method="POST" action="/game/@Model.Game.GameId/endturn">
-                    I give up or time ran out
-                    <br/>
-                    <button type="submit" onclick="return confirm('Are you sure you have finished?')">
-                        End my turn
-                    </button>
-                </form>
-                <br>
-                <progress value="@(60 - Model.Game.TimeLeft())" max="60" id="progressBar"></progress>
-                <script>
-                    var timeleft = @Model.Game.TimeLeft();
-                    var downloadTimer = setInterval(function(){
-                    if(timeleft <= 0){
-                        clearInterval(downloadTimer);
-                    }
-                    document.getElementById("progressBar").value = 60 - timeleft;
-                    timeleft -= 1;
-                    }, 1000);
-                </script>
+                    <progress value="@(60 - Model.Game.TimeLeft())" max="60" id="progressBar"></progress>
+                    <script>
+                        var timeleft = @Model.Game.TimeLeft();
+                        var downloadTimer = setInterval(function(){
+                        if(timeleft <= 0){
+                            clearInterval(downloadTimer);
+                        }
+                        document.getElementById("progressBar").value = 60 - timeleft;
+                        timeleft -= 1;
+                        }, 1000);
+                    </script>
+                }
             }
         }
 
@@ -146,7 +152,7 @@
     }
     else
     {
-        @if (Model.UsersTeam() == null)
+        if (Model.UsersTeam() == null)
         {
             <h2>You need to join a team if you want to play</h2>
         }
