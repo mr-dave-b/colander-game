@@ -11,7 +11,7 @@ namespace colander_game.Models
 
         public Team UsersTeam()
         {
-            return Game?.CurrentTeam(User?.UserId);
+            return Game?.GetPlayersTeam(User?.UserId);
         }
 
         public bool UserIsReady()

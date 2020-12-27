@@ -161,7 +161,7 @@ namespace colander_game.Services
                 return null;
             }
 
-            if (!game.GameCanStart() || game.GameOver())
+            if (!game.GameCanStart || game.IsGameOver)
             {
                 // Can't start yet or game over
                 return null;
@@ -172,7 +172,7 @@ namespace colander_game.Services
             if (game.RoundNumber == 0)
             {
                 // Any player can start the game and go first
-                game.StartTheGame(game.CurrentTeam(user.UserId)?.Name);
+                game.StartTheGame(game.GetPlayersTeam(user.UserId)?.Name);
             }
 
             if (game.ActivePlayer == null)
@@ -195,7 +195,7 @@ namespace colander_game.Services
             if (game.RoundStartTime.HasValue && game.RoundStartTime.Value.AddSeconds(70).CompareTo(nowUtc) < 0)
             {
                 // Outside 70 seconds - can't score a point or draw a paper
-                game.EndPlayersGo(teamName: game.CurrentTeam(user.UserId)?.Name);
+                game.EndPlayersGo(teamName: game.GetPlayersTeam(user.UserId)?.Name);
             }
             else
             {
@@ -229,13 +229,13 @@ namespace colander_game.Services
                     else
                     {
                         // Time is up - end users go
-                        game.EndPlayersGo(teamName: game.CurrentTeam(user.UserId)?.Name);
+                        game.EndPlayersGo(teamName: game.GetPlayersTeam(user.UserId)?.Name);
                     }
                 }
                 else
                 {
                     // Round is finished - end users go and end teams go
-                    game.EndPlayersGo(teamName: game.CurrentTeam(user.UserId)?.Name, endOfRound: true);
+                    game.EndPlayersGo(teamName: game.GetPlayersTeam(user.UserId)?.Name, endOfRound: true);
                 }
             }
 
@@ -251,7 +251,7 @@ namespace colander_game.Services
         {
             var game = await GetGameAsync(gameId, userId);
 
-            if (!game.GameCanStart() || game.GameOver())
+            if (!game.GameCanStart || game.IsGameOver)
             {
                 // Can't start yet or game over
                 return null;
@@ -266,7 +266,7 @@ namespace colander_game.Services
             // TODO: Locking
 
             // Remove the active player and the active paper
-            game.EndPlayersGo(game.CurrentTeam(userId)?.Name);
+            game.EndPlayersGo(game.GetPlayersTeam(userId)?.Name);
 
             // Save the updated game state to DB
             Task task = SaveToStorage(game);
@@ -284,7 +284,7 @@ namespace colander_game.Services
             {
                 // TODO: Locking
 
-                var team = game.CurrentTeam(userId);
+                var team = game.GetPlayersTeam(userId);
                 if (team != null)
                 {
                     var player = team.Players.First(p => p.UserId == userId);

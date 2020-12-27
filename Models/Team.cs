@@ -24,5 +24,7 @@ namespace colander_game.Models
         public int Score { get; set; }
         
         public List<Player> Players { get; set; }
+
+        public int NextPlayer { get; set; }
     }
 }
