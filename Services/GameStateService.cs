@@ -176,8 +176,20 @@ namespace colander_game.Services
 
             if (game.RoundNumber == 0)
             {
-                // Any player can start the game and go first
+                // Any player on any team can start the game
                 game.StartTheGame(game.GetPlayersTeam(user.UserId)?.Name);
+            }
+            else
+            {
+                if (game.GetPlayersTeam(user.UserId)?.Name == game.NextTeamToPlay?.Name)
+                {
+                    // Player is on the correct team to play
+                }
+                else
+                {
+                    // Player is on the wrong team
+                    return null;
+                }
             }
 
             if (game.ActivePlayer == null)
