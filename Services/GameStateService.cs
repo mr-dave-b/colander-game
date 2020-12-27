@@ -31,9 +31,6 @@ namespace colander_game.Services
             {
                 // Create a new game
                 model = new GameModel(gameId, userId);
-                
-                // Save it to the DB
-                await SaveToStorage(model);
             }
             
             return model;
