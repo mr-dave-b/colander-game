@@ -60,9 +60,16 @@ namespace colander_game.Models
 
         public void EndPlayersGo(string teamName, bool endOfRound = false)
         {
-            ActivePlayer = null;
-            ActivePaper = null;
-            RoundStartTime = null;
+            if (ActivePlayer != null)
+            {
+                var team = GetPlayersTeam(ActivePlayer.UserId);
+                team.NextPlayer = team.Players.FindIndex(p => p.UserId == ActivePlayer.UserId) + 1;
+                if (team.NextPlayer >= team.Players.Count)
+                {
+                    team.NextPlayer = 0;
+                }
+            }
+
             if (!endOfRound)
             {
                 var currentTeamIndex = Teams.FindIndex(t => t.Name == teamName);
@@ -79,51 +86,63 @@ namespace colander_game.Models
                     NextTeamToPlayInt = currentTeamIndex;
                 }
             }
+
+            // Remove the active player and paper
+            ActivePlayer = null;
+            ActivePaper = null;
+            RoundStartTime = null;
         }
 
-        public bool GameCanStart()
+        [JsonIgnore]
+        public bool GameCanStart
         {
-            if (RoundNumber > 0)
+            get
             {
+                if (RoundNumber > 0)
+                {
+                    return true;
+                }
+                if (Teams == null || Teams.Count < 2)
+                {
+                    return false;
+                }
+                if (Teams.Any(t => t.Players == null || t.Players.Count == 0))
+                {
+                    return false;
+                }
+                if (ColanderPapers == null || ColanderPapers.Count < Teams.Count*2)
+                {
+                    return false;
+                }
                 return true;
             }
-            if (Teams == null || Teams.Count < 2)
-            {
-                return false;
-            }
-            if (Teams.Any(t => t.Players == null || t.Players.Count == 0))
-            {
-                return false;
-            }
-            if (ColanderPapers == null || ColanderPapers.Count < Teams.Count*2)
-            {
-                return false;
-            }
-            return true;
         }
 
-        public bool GameOver()
-        {
-            return (RoundNumber >= 3 && ColanderPapers != null && ColanderPapers.Count == 0);
-        }
+        [JsonIgnore]
+        public bool IsGameOver =>
+            (RoundNumber >= 3 && ColanderPapers != null && ColanderPapers.Count == 0);
 
-        public Team CurrentTeam(string userId)
+        public Team GetPlayersTeam(string userId)
         {
             return Teams?.FirstOrDefault(t => t.Players != null && t.Players.Any(p => p.UserId == userId));
         }
 
-        public int TimeLeft()
+        [JsonIgnore]
+        public int TimeLeft
         {
-            if (RoundStartTime == null)
+            get
             {
-                return 0;
+                if (RoundStartTime == null)
+                {
+                    return 0;
+                }
+                int timeLeft = (int)RoundStartTime.Value.AddSeconds(60).Subtract(DateTime.UtcNow).TotalSeconds;
+                if (timeLeft < 1)
+                {
+                    return 0;
+                }
+                return timeLeft;
             }
-            int timeLeft = (int)RoundStartTime.Value.AddSeconds(60).Subtract(DateTime.UtcNow).TotalSeconds;
-            if (timeLeft < 1)
-            {
-                return 0;
-            }
-            return timeLeft;
         }
     }
 }

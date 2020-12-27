@@ -56,9 +56,11 @@
             </p>
         }
 
-        <p><b>
-            Team @Model.Game.NextTeamToPlay?.Name are up
-        </b></p>
+        <p>
+            <b>
+            Team @Model.Game.NextTeamToPlay?.Name are up</b>
+            (@Model.Game.NextTeamToPlay?.Players[Model.Game.NextTeamToPlay.NextPlayer].UserName to present next)
+        </p>
 
         @if (Model.UsersTeam() == null)
         {
@@ -66,7 +68,7 @@
         }
         else
         {
-            if (Model.Game.GameOver())
+            if (Model.Game.IsGameOver)
             {
                 <p><b>Game over</b></p>
             }
@@ -77,7 +79,7 @@
                     if (Model.UsersTeam()?.Name == Model.Game.NextTeamToPlay?.Name)
                     {
                         <form method="POST" action="/game/@Model.Game.GameId/getpaper">
-                            I&apos;m going to go next!
+                            I will go next
                             <button type="submit">
                                 Lets play!
                             </button>
@@ -107,9 +109,9 @@
                         </button>
                     </form>
                     <br>
-                    <progress value="@(60 - Model.Game.TimeLeft())" max="60" id="progressBar"></progress>
+                    <progress value="@(60 - Model.Game.TimeLeft)" max="60" id="progressBar"></progress>
                     <script>
-                        var timeleft = @Model.Game.TimeLeft();
+                        var timeleft = @Model.Game.TimeLeft;
                         var downloadTimer = setInterval(function(){
                         if(timeleft <= 0){
                             clearInterval(downloadTimer);
@@ -138,9 +140,9 @@
                 }
             </h2>
             <br>
-            <progress value="@(60 - Model.Game.TimeLeft())" max="60" id="progressBar"></progress>
+            <progress value="@(60 - Model.Game.TimeLeft)" max="60" id="progressBar"></progress>
             <script>
-                var timeleft = @Model.Game.TimeLeft();
+                var timeleft = @Model.Game.TimeLeft;
                 var downloadTimer = setInterval(function(){
                 if(timeleft <= 0){
                     clearInterval(downloadTimer);
@@ -188,7 +190,7 @@
 
             <br />
 
-            @if (Model.Game.GameCanStart())
+            @if (Model.Game.GameCanStart)
             {
                 @if (Model.UserIsReady())
                 {
