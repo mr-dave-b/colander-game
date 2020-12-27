@@ -128,7 +128,7 @@
                         var downloadTimer = setInterval(function(){
                         if (timeleft <= 0) {
                             clearInterval(downloadTimer);
-                            setTimeout(location.reload();, 10000);
+                            setTimeout(location.reload(), 10000);
                         }
                         document.getElementById("progressBar").value = 60 - timeleft;
                         timeleft -= 1;
