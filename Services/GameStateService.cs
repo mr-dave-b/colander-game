@@ -32,6 +32,11 @@ namespace colander_game.Services
                 // Create a new game
                 model = new GameModel(gameId, userId);
             }
+            else
+            {
+                // Any time the game is loaded, check if someone's turn has ended
+                await CheckForTimeout(model);
+            }
             
             return model;
         }
@@ -77,7 +82,7 @@ namespace colander_game.Services
                 game.Teams.Add(myTeam);
             }
 
-            // Save the updated game state to DB
+            // Wait for the save since we will reload the page immediately
             await SaveToStorage(game);
 
             // TODO: Unlocking???
@@ -112,7 +117,7 @@ namespace colander_game.Services
                 game.Teams.Remove(myTeam);
             }
 
-            // Save the updated game state to DB
+            // Wait for the save since we will reload the page immediately
             await SaveToStorage(game);
 
             // TODO: Unlocking???
@@ -142,7 +147,7 @@ namespace colander_game.Services
                     game.ColanderPapers.Add(newPaper);
                 }
 
-                // Save the updated game state to DB
+                // Wait for the save since we will reload the page immediately
                 await SaveToStorage(game);
 
                 // TODO: Unlocking???
@@ -195,7 +200,7 @@ namespace colander_game.Services
             if (game.RoundStartTime.HasValue && game.RoundStartTime.Value.AddSeconds(70).CompareTo(nowUtc) < 0)
             {
                 // Outside 70 seconds - can't score a point or draw a paper
-                game.EndPlayersGo(teamName: game.GetPlayersTeam(user.UserId)?.Name);
+                game.EndPlayersGo();
             }
             else
             {
@@ -229,18 +234,18 @@ namespace colander_game.Services
                     else
                     {
                         // Time is up - end users go
-                        game.EndPlayersGo(teamName: game.GetPlayersTeam(user.UserId)?.Name);
+                        game.EndPlayersGo();
                     }
                 }
                 else
                 {
                     // Round is finished - end users go and end teams go
-                    game.EndPlayersGo(teamName: game.GetPlayersTeam(user.UserId)?.Name, endOfRound: true);
+                    game.EndPlayersGo(endOfRound: true);
                 }
             }
 
-            // Save the updated game state to DB
-            Task task = SaveToStorage(game);
+            // Wait for the save since we will reload the page immediately
+            await SaveToStorage(game);
 
             // TODO: Unlocking???
 
@@ -266,7 +271,7 @@ namespace colander_game.Services
             // TODO: Locking
 
             // Remove the active player and the active paper
-            game.EndPlayersGo(game.GetPlayersTeam(userId)?.Name);
+            game.EndPlayersGo();
 
             // Save the updated game state to DB
             Task task = SaveToStorage(game);
@@ -290,11 +295,25 @@ namespace colander_game.Services
                     var player = team.Players.First(p => p.UserId == userId);
                     player.Ready = ready;
 
-                    Task task = SaveToStorage(game);
+                    // Wait for the save since we will reload the page immediately
+                    await SaveToStorage(game);
                     // TODO: Unlocking???
                 }
             }
             return game;
+        }
+        
+        private async Task CheckForTimeout(GameModel game)
+        {
+            // if timer is at more than 70 seconds
+            if (game.RoundStartTime.HasValue && game.RoundStartTime.Value.AddSeconds(70).CompareTo(DateTime.UtcNow) < 0)
+            {
+                // End users turn
+                game.EndPlayersGo();
+
+                // Save to database
+                await SaveToStorage(game);
+            }
         }
 
         private async Task<GameModel> LoadFromStorage(string gameId)

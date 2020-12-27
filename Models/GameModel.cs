@@ -58,8 +58,13 @@ namespace colander_game.Models
             }
         }
 
-        public void EndPlayersGo(string teamName, bool endOfRound = false)
+        // End turn of the current active player
+        public void EndPlayersGo(bool endOfRound = false)
         {
+            // Remove the active paper and remove the timer
+            ActivePaper = null;
+            RoundStartTime = null;
+
             if (ActivePlayer != null)
             {
                 var team = GetPlayersTeam(ActivePlayer.UserId);
@@ -68,29 +73,27 @@ namespace colander_game.Models
                 {
                     team.NextPlayer = 0;
                 }
-            }
 
-            if (!endOfRound)
-            {
-                var currentTeamIndex = Teams.FindIndex(t => t.Name == teamName);
-                if (currentTeamIndex > -1)
+                if (!endOfRound)
                 {
-                    // Move play to the next team
-                    currentTeamIndex++;
-
-                    // TODO: Skip team if it is empty
-                    if (currentTeamIndex >= Teams.Count)
+                    // When it's not the end of the round, play moves to the next team
+                    var currentTeamIndex = Teams.FindIndex(t => t.Name == team.Name);
+                    if (currentTeamIndex > -1)
                     {
-                        currentTeamIndex = 0;
-                    }
-                    NextTeamToPlayInt = currentTeamIndex;
-                }
-            }
+                        // Move play to the next team
+                        currentTeamIndex++;
 
-            // Remove the active player and paper
-            ActivePlayer = null;
-            ActivePaper = null;
-            RoundStartTime = null;
+                        // TODO: Skip empty teams?
+                        if (currentTeamIndex >= Teams.Count)
+                        {
+                            currentTeamIndex = 0;
+                        }
+                        NextTeamToPlayInt = currentTeamIndex;
+                    }
+                }
+
+                ActivePlayer = null;
+            }
         }
 
         [JsonIgnore]
