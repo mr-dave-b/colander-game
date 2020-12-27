@@ -7,6 +7,31 @@ a.navbar-brand {
   word-break: break-all;
 }
 
+/* Game over screen
+-------------------------------------------------- */
+#final-results {
+  font-size: 1.3em;
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  margin: auto;
+}
+
+#final-results td, #customers th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#final-results tr:nth-child(even){background-color: #f2f2f2;}
+
+#final-results tr:hover {background-color: #ddd;}
+
+#final-results th {
+  padding: 8px 12px;
+  text-align: left;
+  background-color: #00a;
+  color: white;
+}
+
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
