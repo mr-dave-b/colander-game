@@ -56,12 +56,6 @@
             </p>
         }
 
-        <p>
-            <b>
-            Team @Model.Game.NextTeamToPlay?.Name are up</b>
-            (@Model.Game.NextTeamToPlay?.Players[Model.Game.NextTeamToPlay.NextPlayer].UserName to present next)
-        </p>
-
         @if (Model.Game.IsGameOver)
         {
             <p><b>Game over</b></p>
@@ -74,14 +68,19 @@
                 @foreach (var team in @Model.Game.Teams.Where(t => t.Players?.Count > 0).OrderByDescending(t => t.Score))
                 {
                     <tr>
-                        <td>Team Name</td>
-                        <td>Final Score</td>
+                        <td>@team.Name</td>
+                        <td>@team.Score</td>
                     </tr>
                 }
             </table>
         }
         else
         {
+            <p>
+                <b>Team @Model.Game.NextTeamToPlay?.Name are up</b>
+                (@Model.Game.NextTeamToPlay?.Players[Model.Game.NextTeamToPlay.NextPlayer].UserName to present next)
+            </p>
+
             @if (Model.UsersTeam() == null)
             {
                 <h2>You need to join a team if you want to play</h2>
@@ -263,7 +262,7 @@
                     </ul>
 
                     <!-- br -->
-                    @if ((Model.Game.RoundNumber == 0 && !Model.UserIsReady()) || Model.UsersTeam() == null)
+                    @if ((Model.Game.RoundNumber == 0 && !Model.UserIsReady()) || (!Model.Game.IsGameOver && Model.UsersTeam() == null))
                     {
                         if (Model.UsersTeam() != team)
                         {
@@ -291,7 +290,7 @@
             
         }
     }
-    @if ((Model.Game.RoundNumber == 0 && !Model.UserIsReady()) || Model.UsersTeam() == null)
+    @if ((Model.Game.RoundNumber == 0 && !Model.UserIsReady()) || (!Model.Game.IsGameOver && Model.UsersTeam() == null))
     {
         <form method="POST" action="/game/@Model.Game.GameId/jointeam">
             <input type="text" name="TeamName" placeholder="New team" />
