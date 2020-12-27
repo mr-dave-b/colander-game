@@ -36,6 +36,10 @@ namespace colander_game.Models
 
         public bool AutoRefreshPage()
         {
+            if (Game?.IsGameOver == true)
+            {
+                return false;
+            }
             if (Game?.RoundNumber == 0 && UserIsReady())
             {
                 return true;
