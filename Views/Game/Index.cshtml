@@ -128,14 +128,11 @@
                         var downloadTimer = setInterval(function(){
                         if (timeleft <= 0) {
                             clearInterval(downloadTimer);
-                            setTimeout(location.reload(), 10000);
+                            setTimeout(function(){ location.reload(); }, 10500);
                         }
                         document.getElementById("progressBar").value = 60 - timeleft;
                         timeleft -= 1;
                         }, 1000);
-
-
-
                     </script>
                 }
             }
