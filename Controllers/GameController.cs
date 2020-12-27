@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using colander_game.Models;
-using Microsoft.AspNetCore.Http;
 using colander_game.Services;
-using Newtonsoft.Json;
 
 namespace colander_game.Controllers
 {
