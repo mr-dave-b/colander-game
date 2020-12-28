@@ -2,11 +2,11 @@ namespace colander_game.Models
 {
     public class PlayerRenderModel
     {
-        public PlayerRenderModel(Player player, string currentUserId, string nextUpPlayer)
+        public PlayerRenderModel(Player player, string currentUserId, string nextUpPlayer, bool isGameOver)
         {
             Player = player;
             CurrentUserId = currentUserId;
-            NextUpPlayer = nextUpPlayer;
+            NextUpPlayer = isGameOver ? null : nextUpPlayer;
         }
 
         public Player Player { get; set; }
