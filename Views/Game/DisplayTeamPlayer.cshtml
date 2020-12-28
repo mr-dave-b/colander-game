@@ -2,23 +2,19 @@
 
 @if (Model.NextUpPlayer == Model.Player.UserId)
 {
-    @if (Model.Player.UserId == Model.CurrentUserId)
-    {
-        <b>@Model.Player.UserName (YOU)</b>
-    }
-    else
-    {
+    <b>
         @Model.Player.UserName
-    }
+        @if (Model.Player.UserId == Model.CurrentUserId)
+        {
+            <text> (YOU)</text>
+        }
+    </b>
 }
 else
 {
+    @Model.Player.UserName
     @if (Model.Player.UserId == Model.CurrentUserId)
     {
-        <b>@Model.Player.UserName (YOU)</b>
-    }
-    else
-    {
-        @Model.Player.UserName
+        <text> (YOU)</text>
     }
 }

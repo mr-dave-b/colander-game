@@ -245,7 +245,7 @@
                     @foreach (var player in team.Players)
                     {
                         <li>
-                            <partial name="DisplayTeamPlayer.cshtml" model="new PlayerRenderModel(player, Model.User?.UserId, team.GetNextPlayer()?.UserId)" />
+                            <partial name="DisplayTeamPlayer.cshtml" model="new PlayerRenderModel(player, Model.User?.UserId, team.GetNextPlayer()?.UserId, Model.Game.IsGameOver)" />
                         </li>
                     }
                     </ul>
