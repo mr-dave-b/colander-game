@@ -1,0 +1,24 @@
+﻿@model PlayerRenderModel;
+
+@if (Model.NextUpPlayer == Model.Player.UserId)
+{
+    @if (Model.Player.UserId == Model.CurrentUserId)
+    {
+        <b>@Model.Player.UserName (YOU)</b>
+    }
+    else
+    {
+        @Model.Player.UserName
+    }
+}
+else
+{
+    @if (Model.Player.UserId == Model.CurrentUserId)
+    {
+        <b>@Model.Player.UserName (YOU)</b>
+    }
+    else
+    {
+        @Model.Player.UserName
+    }
+}

@@ -78,7 +78,7 @@
         {
             <p>
                 <b>Team @Model.Game.NextTeamToPlay?.Name are up</b>
-                (@Model.Game.NextTeamToPlay?.Players[Model.Game.NextTeamToPlay.NextPlayer].UserName to present next)
+                (@Model.Game.NextTeamToPlay?.GetNextPlayer()?.UserName to present next)
             </p>
 
             @if (Model.UsersTeam() == null)
@@ -244,21 +244,9 @@
                     <ul>
                     @foreach (var player in team.Players)
                     {
-                        if (player.UserId == Model.User?.UserId)
-                        {
-                            <li>
-                            <b>@player.UserName (YOU)</b>
-                            <br />
-                            </li>
-                        }
-                        else
-                        {
-                            <li>
-                                @player.UserName
-                                <br />
-                            </li>
-                        }
-
+                        <li>
+                            <partial name="DisplayTeamPlayer.cshtml" model="new PlayerRenderModel(player, Model.User?.UserId, team.GetNextPlayer()?.UserId)" />
+                        </li>
                     }
                     </ul>
 
