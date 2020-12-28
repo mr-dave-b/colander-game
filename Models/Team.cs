@@ -26,5 +26,14 @@ namespace colander_game.Models
         public List<Player> Players { get; set; }
 
         public int NextPlayer { get; set; }
+
+        public Player GetNextPlayer()
+        {
+            if (Players == null || Players.Count == 0)
+            {
+                return null;
+            }
+            return Players[NextPlayer];
+        }
     }
 }
