@@ -7,8 +7,16 @@ a.navbar-brand {
   word-break: break-all;
 }
 
-/* Game over screen
--------------------------------------------------- */
+.paper-box {
+  width: 400px;
+  margin: auto;
+  background-color: #fff740;
+  border: 2px solid black;
+  border-radius: 5px;
+  padding: 20px;
+}
+
+/* Game over screen */
 #final-results {
   font-size: 1.3em;
   font-family: Arial, Helvetica, sans-serif;
@@ -32,8 +40,18 @@ a.navbar-brand {
   color: white;
 }
 
-/* Sticky footer styles
--------------------------------------------------- */
+img#colander-head {
+  width: 400px;
+}
+
+@media only screen
+  and (max-device-width: 812px) { 
+    img#colander-head {
+      width: 100%;
+    }
+}
+
+/* Sticky footer styles ----------------------- */
 html {
   font-size: 14px;
 }
@@ -59,8 +77,7 @@ button.accept-policy {
   line-height: inherit;
 }
 
-/* Sticky footer styles
--------------------------------------------------- */
+/* Sticky footer styles ----------------------- */
 html {
   position: relative;
   min-height: 100%;
