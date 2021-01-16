@@ -13,10 +13,10 @@ namespace colander_game.Services
         
         Task<GameModel> AddNewPaperAsync(string gameId, string paperWords, string userId);
 
+        Task<GameModel> SetPlayerReady(string gameId, string userId, bool ready = true);
+
         Task<GameModel> DrawAPaper(string gameId, UserModel user);
 
         Task<GameModel> EndPlayerTurn(string gameId, string userId);
-
-        Task<GameModel> SetPlayerReady(string gameId, string userId, bool ready = true);     
     }
 }
