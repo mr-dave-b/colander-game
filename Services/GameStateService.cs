@@ -128,6 +128,12 @@ namespace colander_game.Services
         {
             var game = await GetGameAsync(gameId, userId);
 
+            if (game.RoundNumber > 0)
+            {
+                // Can't add a new paper when the game has started
+                return game;
+            }
+
             if (!string.IsNullOrEmpty(paperWords))
             {
                 // TODO: Locking
@@ -155,6 +161,9 @@ namespace colander_game.Services
             return game;
         }
 
+        // Takes a new paper from the colander.
+        // Starts the round if it wasn't already.
+        // Scores a point if a paper was already drawn
         public async Task<GameModel> DrawAPaper(string gameId, UserModel user)
         {
             var game = await GetGameAsync(gameId, user.UserId);
