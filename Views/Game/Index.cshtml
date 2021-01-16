@@ -113,7 +113,7 @@
                         We got it!
                         <br/>
                         <button type="submit" onclick="return confirm('Did your team get it right?')">
-                            Throw paper on the floor
+                            Give us a point
                         </button>
                     </form>
                     <br/>
@@ -180,7 +180,7 @@
         {
             @if (Model.UserIsReady())
             {
-                <p>You are ready and waiting for the game to start</p>
+                <p>You have finished writing pieces of paper. Waiting for the game to start.</p>
                 <br />
                 <form method="POST" action="/game/@Model.Game.GameId/notready">
                     <button type="submit">
@@ -194,13 +194,13 @@
                 <form method="POST" action="/game/@Model.Game.GameId/addpaper">
                     <input type="text" name="NewPaper" placeholder="My fun words go here" />
                     <button type="submit">
-                        Add it to the colander
+                        Put it into the colander
                     </button>
                 </form>
                 <br />
                 <form method="POST" action="/game/@Model.Game.GameId/ready">
                     <button type="submit">
-                        OK I&apos;m ready to play!
+                        OK I&apos;m finished and ready to play!
                     </button>
                 </form>
             }
@@ -215,8 +215,8 @@
                     <form method="POST" action="/game/@Model.Game.GameId/getpaper">
                         When everyone has finished writing:<br/>
                         <text>
-                            Start the game - I&apos;m going to present first!
-                            <button type="submit">
+                            I want to start the game and go first!
+                            <button type="submit" onclick="return confirm('Make sure everyone is ready to start the game')">
                                 Lets go!
                             </button>
                         </text>
