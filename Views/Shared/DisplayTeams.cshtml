@@ -1,0 +1,50 @@
+﻿@model GameRenderModel;
+
+<div id="teams-box">
+    <h2>Teams</h2>
+    @if (Model.Game?.Teams != null)
+    {
+        @foreach (var team in Model.Game.Teams)
+        {
+            <p>
+                <b>@team.Name (@(team.Score)pts)</b> <br>
+                @team.Players.Count players
+                @if (team.Players != null)
+                {
+                    <ul>
+                    @foreach (var player in team.Players)
+                    {
+                        <li>
+                            <partial name="DisplayTeamPlayer" model="new PlayerRenderModel(player, Model.User?.UserId, team.GetNextPlayer()?.UserId, Model.Game.IsGameOver)" />
+                        </li>
+                    }
+                    </ul>
+
+                    @if ((Model.Game.RoundNumber == 0 && !Model.UserIsReady()) || (!Model.Game.IsGameOver && Model.UsersTeam() == null))
+                    {
+                        if (Model.UsersTeam() != team)
+                        {
+                            @using(Html.BeginForm("JoinTeam", "Game", new { gameId = Model.Game.GameId }, FormMethod.Post))
+                            {
+                                <input type="hidden" name="teamName" value="@team.Name" />
+                                <button type="submit">
+                                    Join team @team.Name
+                                </button>
+                            }
+                            @if (team.Players == null || team.Players.Count == 0)
+                            {
+                                @using(Html.BeginForm("DeleteTeam", "Game", new { gameId = Model.Game.GameId }, FormMethod.Post))
+                                {
+                                    <input type="hidden" name="teamName" value="@team.Name" />
+                                    <button type="submit">
+                                        Delete empty team @team.Name
+                                    </button>
+                                }
+                            }
+                        }
+                    }
+                }
+            </p>
+        }
+    }
+</div>
