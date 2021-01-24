@@ -13,38 +13,7 @@
 <div class="text-center">
     <h1 class="display-4">Colanders!</h1>
 
-    <p>
-
-    @if (Model.Game.ActivePaper != null)
-    {
-        <text>
-        @(Model.Game.ColanderPapers.Count - 1) papers are in the colander
-        <br>
-        and 1 in play
-        </text>
-    }
-    else
-    {
-        <text>
-        @(Model.Game.ColanderPapers?.Count ?? 0) papers are in the colander
-        </text>
-    }
-    @if (Model.Game.PlayedPapers?.Count > 0)
-    {
-        <br />
-        @Model.Game.PlayedPapers.Count
-        <text> are currently on the floor</text>
-    }
-
-    @if (Model.Game.RoundNumber == 0)
-    {
-        <br />
-        <text>
-            @(Model.Game.ColanderPapers?.Count(p => p.AuthorUserId == Model.User.UserId) ?? 0) papers were written by you
-        </text>
-    }
-
-    </p>
+    <partial name="DisplayColander" model="Model" />
 
     @if (Model.Game.RoundNumber > 0)
     {
@@ -233,62 +202,14 @@
 
 </div>
 
-<div>
-    <h2>Teams</h2>
-    @if (Model.Game?.Teams != null)
-    {
-        @foreach (var team in Model.Game.Teams)
-        {
-            <p>
-                <b>@team.Name (@(team.Score)pts)</b> <br>
-                @team.Players.Count players
-                @if (team.Players != null)
-                {
-                    <ul>
-                    @foreach (var player in team.Players)
-                    {
-                        <li>
-                            <partial name="DisplayTeamPlayer.cshtml" model="new PlayerRenderModel(player, Model.User?.UserId, team.GetNextPlayer()?.UserId, Model.Game.IsGameOver)" />
-                        </li>
-                    }
-                    </ul>
+<partial name="DisplayTeams" model="Model" />
 
-                    <!-- br -->
-                    @if ((Model.Game.RoundNumber == 0 && !Model.UserIsReady()) || (!Model.Game.IsGameOver && Model.UsersTeam() == null))
-                    {
-                        if (Model.UsersTeam() != team)
-                        {
-                            @using(Html.BeginForm("JoinTeam", "Game", new { gameId = Model.Game.GameId }, FormMethod.Post))
-                            {
-                                <input type="hidden" name="teamName" value="@team.Name" />
-                                <button type="submit">
-                                    Join team @team.Name
-                                </button>
-                            }
-                            @if (team.Players == null || team.Players.Count == 0)
-                            {
-                                @using(Html.BeginForm("DeleteTeam", "Game", new { gameId = Model.Game.GameId }, FormMethod.Post))
-                                {
-                                    <input type="hidden" name="teamName" value="@team.Name" />
-                                    <button type="submit">
-                                        Delete empty team @team.Name
-                                    </button>
-                                }
-                            }
-                        }
-                    }
-                }
-            </p>
-            
-        }
-    }
-    @if ((Model.Game.RoundNumber == 0 && !Model.UserIsReady()) || (!Model.Game.IsGameOver && Model.UsersTeam() == null))
-    {
-        <form method="POST" action="/game/@Model.Game.GameId/jointeam">
-            <input type="text" name="TeamName" placeholder="New team" />
-            <button type="submit">
-                Create new team
-            </button>
-        </form>
-    }
-</div>
+@if ((Model.Game.RoundNumber == 0 && !Model.UserIsReady()) || (!Model.Game.IsGameOver && Model.UsersTeam() == null))
+{
+    <form method="POST" action="/game/@Model.Game.GameId/jointeam">
+        <input type="text" name="TeamName" placeholder="New team" />
+        <button type="submit">
+            Create new team
+        </button>
+    </form>
+}

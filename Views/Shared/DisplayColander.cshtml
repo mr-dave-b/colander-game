@@ -1,0 +1,34 @@
+﻿@model GameRenderModel;
+
+<div id="colander-status-box">
+    <p>
+    @if (Model.Game.ActivePaper != null)
+    {
+        <text>
+        @(Model.Game.ColanderPapers.Count - 1) papers are in the colander
+        <br>
+        and 1 in play
+        </text>
+    }
+    else
+    {
+        <text>
+        @(Model.Game.ColanderPapers?.Count ?? 0) papers are in the colander
+        </text>
+    }
+    @if (Model.Game.PlayedPapers?.Count > 0)
+    {
+        <br />
+        @Model.Game.PlayedPapers.Count
+        <text> are currently on the floor</text>
+    }
+
+    @if (Model.Game.RoundNumber == 0)
+    {
+        <br />
+        <text>
+            @(Model.Game.ColanderPapers?.Count(p => p.AuthorUserId == Model.User.UserId) ?? 0) papers were written by you
+        </text>
+    }
+    </p>
+</div>
