@@ -1,5 +1,8 @@
 ﻿@model GameRenderModel;
-
-<partial name="DisplayColander" model="Model" />
-
-<partial name="DisplayTeams" model="Model" />
+@{
+    Layout = null;
+}
+<html>
+    <partial name="DisplayColander" model="Model" />
+    <partial name="DisplayTeams" model="Model" />
+</html>
