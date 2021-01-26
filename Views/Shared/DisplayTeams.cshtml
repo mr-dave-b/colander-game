@@ -20,27 +20,27 @@
                     </li>
                 }
                 </ul>
+            }
 
-                @if ((Model.Game.RoundNumber == 0 && !Model.UserIsReady()) || (!Model.Game.IsGameOver && Model.UsersTeam() == null))
+            @if ((Model.Game.RoundNumber == 0 && !Model.UserIsReady()) || (!Model.Game.IsGameOver && Model.UsersTeam() == null))
+            {
+                if (team != (Model.UsersTeam() ?? new Team()))
                 {
-                    if (team != (Model.UsersTeam() ?? new Team()))
+                    @using(Html.BeginForm("JoinTeam", "Game", new { gameId = Model.Game.GameId }, FormMethod.Post))
                     {
-                        @using(Html.BeginForm("JoinTeam", "Game", new { gameId = Model.Game.GameId }, FormMethod.Post))
+                        <input type="hidden" name="teamName" value="@team.Name" />
+                        <button type="submit">
+                            Join team @team.Name
+                        </button>
+                    }
+                    @if (team.Players == null || team.Players.Count == 0)
+                    {
+                        @using(Html.BeginForm("DeleteTeam", "Game", new { gameId = Model.Game.GameId }, FormMethod.Post))
                         {
                             <input type="hidden" name="teamName" value="@team.Name" />
                             <button type="submit">
-                                Join team @team.Name
+                                Delete empty team @team.Name
                             </button>
-                        }
-                        @if (team.Players == null || team.Players.Count == 0)
-                        {
-                            @using(Html.BeginForm("DeleteTeam", "Game", new { gameId = Model.Game.GameId }, FormMethod.Post))
-                            {
-                                <input type="hidden" name="teamName" value="@team.Name" />
-                                <button type="submit">
-                                    Delete empty team @team.Name
-                                </button>
-                            }
                         }
                     }
                 }
