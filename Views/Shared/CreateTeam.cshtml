@@ -1,0 +1,13 @@
+﻿@model GameRenderModel;
+
+@if ((Model.Game.RoundNumber == 0 && !Model.UserIsReady()) || (!Model.Game.IsGameOver && Model.UsersTeam() == null))
+{
+    <div id="create-team">
+        <form method="POST" action="/game/@Model.Game.GameId/jointeam">
+            <input type="text" name="TeamName" placeholder="New team" />
+            <button type="submit">
+                Create new team
+            </button>
+        </form>
+    </div>
+}

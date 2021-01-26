@@ -56,11 +56,15 @@ img#colander-head {
 div#teams-box {
   border-radius: 25px;
   border: 2px solid #6060ff;
-  padding: 20px;
+  padding: 10px 20px;
   max-width: 400px;
 }
 
-/* Sticky footer styles ------------- */
+div#create-team {
+  padding: 10px 20px;
+}
+
+/* Sticky footer styles ---- */
 html {
   font-size: 14px;
 }
@@ -86,7 +90,6 @@ button.accept-policy {
   line-height: inherit;
 }
 
-/* Sticky footer styles --------------- */
 html {
   position: relative;
   min-height: 100%;
