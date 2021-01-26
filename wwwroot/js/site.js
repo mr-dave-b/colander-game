@@ -25,20 +25,6 @@ function loadStatusHtml(url)
         // There was an error
         console.warn('Something went wrong.', err);
     });
-	var xhr = new XMLHttpRequest();
-	xhr.onreadystatechange=function()
-	{
-		if(xhr.readyState == 4)
-		{
-			if(xhr.status == 200)
-			{
-				storage.innerHTML = getBody(xhr.responseText);
-			}
-		}
-	};
-
-	xhr.open("GET", url , true);
-	xhr.send(null); 
 } 
 
 var gameArea = document.getElementById("game-area");
