@@ -1,6 +1,9 @@
 ﻿
 function loadStatusHtml(url)
 {
+    var spinner = document.getElementById("ajax-spinner");
+    spinner.style.display = "block";
+
     fetch(url).then(function (response) {
         return response.text();
     }).then(function (html) {    
@@ -15,7 +18,8 @@ function loadStatusHtml(url)
         var teamsBox = document.getElementById("teams-box");
         var teamsData = doc.querySelector('div#teams-box');
         teamsBox.innerHTML = teamsData.innerHTML;
-        alert("it works?");
+
+        spinner.style.display = "none";
 
     }).catch(function (err) {
         // There was an error
@@ -48,7 +52,6 @@ if (round == "0")
         //    clearInterval(refreshTimer);
         //    setTimeout(function(){ location.reload(); }, 10500);
         //}
-        alert("/status/" + gameId);
-        loadStatusHtml("/status/xmas");
+        loadStatusHtml("/status/" + gameId);
     }, 5000);
 }

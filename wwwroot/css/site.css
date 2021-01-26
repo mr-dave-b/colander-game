@@ -64,6 +64,13 @@ div#create-team {
   padding: 10px 20px;
 }
 
+div#ajax-spinner {
+  display: none;
+  position: fixed;
+  top: 15px;
+  left: 15px;
+}
+
 /* Sticky footer styles ---- */
 html {
   font-size: 14px;
