@@ -10,7 +10,8 @@
     return;
 }
 
-<div class="text-center">
+<div id="game-area" class="text-center" data-round="@Model.Game.RoundNumber" data-gameid="@Model.Game.GameId">
+
     <h1 class="display-4">Colanders!</h1>
 
     <partial name="DisplayColander" model="Model" />
@@ -199,17 +200,8 @@
             }
         }
     }
-
 </div>
 
 <partial name="DisplayTeams" model="Model" />
 
-@if ((Model.Game.RoundNumber == 0 && !Model.UserIsReady()) || (!Model.Game.IsGameOver && Model.UsersTeam() == null))
-{
-    <form method="POST" action="/game/@Model.Game.GameId/jointeam">
-        <input type="text" name="TeamName" placeholder="New team" />
-        <button type="submit">
-            Create new team
-        </button>
-    </form>
-}
+<partial name="CreateTeam" model="Model" />
