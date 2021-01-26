@@ -23,7 +23,7 @@
 
                 @if ((Model.Game.RoundNumber == 0 && !Model.UserIsReady()) || (!Model.Game.IsGameOver && Model.UsersTeam() == null))
                 {
-                    if (Model.UsersTeam() != team)
+                    if (team != (Model.UsersTeam() ?? new Team()))
                     {
                         @using(Html.BeginForm("JoinTeam", "Game", new { gameId = Model.Game.GameId }, FormMethod.Post))
                         {
