@@ -181,27 +181,7 @@
 
             <br />
 
-            @if (Model.Game.GameCanStart)
-            {
-                @if (Model.UserIsReady())
-                {
-                    <p>@Model.ReadyPlayersCount() players set as ready, @Model.NotReadyPlayersCount() are not</p>
-                    <form method="POST" action="/game/@Model.Game.GameId/getpaper">
-                        When everyone has finished writing:<br/>
-                        <text>
-                            I want to start the game and go first!
-                            <button type="submit" onclick="return confirm('Make sure everyone is ready to start the game')">
-                                Lets go!
-                            </button>
-                        </text>
-                    </form>
-                }
-            }
-            else
-            {
-                <p><b>You need at least 2 pieces of paper per team to start the game.</b></p>
-                <p><b>You must not have any empty teams to start the game.</b></p>
-            }
+            <partial name="PlayerReadyToStart" model="Model" />
         }
     }
 </div>
