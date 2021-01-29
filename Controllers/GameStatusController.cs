@@ -16,7 +16,7 @@ namespace colander_game.Controllers
             _gameService = gameService;
         }
 
-        [Route("status/{gameId}")]
+        [Route("data/pregame/{gameId}")]
         public async Task<IActionResult> Index(string gameId)
         {
             gameId = gameId.FormatGameId();

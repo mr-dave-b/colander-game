@@ -2,7 +2,11 @@
 @{
     Layout = null;
 }
-<html>
+<html data-round="@Model.Game.RoundNumber">
+@if (Model.Game.RoundNumber == 0)
+{
     <partial name="DisplayColander" model="Model" />
     <partial name="DisplayTeams" model="Model" />
+    <partial name="PlayerReadyToStart" model="Model" />
+}
 </html>
