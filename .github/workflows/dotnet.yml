@@ -1,0 +1,31 @@
+name: .NET
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@main
+
+    - name: Set up .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '6.0.x'
+
+    - name: Build with dotnet
+      run: dotnet build --configuration Release
+
+    - name: dotnet publish
+      run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+
+    - name: Deploy to Azure Web App
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: 'colander-game'
+        slot-name: 'production'
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_3124628dc3194cfb82bd24c12870dcb1 }}
+        package: ${{env.DOTNET_ROOT}}/myapp 
