@@ -22,15 +22,41 @@ namespace colander_game.Controllers
         public async Task<IActionResult> Index(string gameId)
         {
             gameId = gameId.FormatGameId();
-
             var userId = _sessionService.GetUserId(Request, Response);
+
+            var game = await _gameService.GetGameAsync(gameId, userId);
+            if (game.IsGameOver)
+            {
+                return Redirect($"/gameover/{gameId}");
+            }
+
             var user = await _sessionService.GetUserData(userId);
             if (string.IsNullOrWhiteSpace(user?.UserName))
             {
                 return Redirect("/");
             }
 
+            return View(new GameRenderModel
+            {
+                User = user,
+                Game = game
+            });
+        }
+
+        [Route("gameover/{gameId}")]
+        public async Task<IActionResult> GameOver(string gameId)
+        {
+            gameId = gameId.FormatGameId();
+            var userId = _sessionService.GetUserId(Request, Response);
+
             var game = await _gameService.GetGameAsync(gameId, userId);
+
+            if (!game.IsGameOver)
+            {
+                return Redirect($"/game/{gameId}");
+            }
+
+            var user = await _sessionService.GetUserData(userId);
 
             return View(new GameRenderModel
             {

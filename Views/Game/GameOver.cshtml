@@ -1,0 +1,41 @@
+﻿@model GameRenderModel;
+@using System.Linq;
+
+@{
+    ViewData["Title"] = "Game Over!";
+}
+
+@if (Model?.Game == null)
+{
+    return;
+}
+
+<div id="game-area" class="text-center" data-round="@Model.Game.RoundNumber" data-game-id="@Model.Game.GameId">
+
+    <h1 class="display-4">Colanders!</h1>
+
+    <partial name="DisplayColander" model="Model" />
+    
+    <h2>Game over</h2>
+        <p>
+            <img id="colander-head" src="/media/colander-on-my-head.jpg" />
+        </p>
+    <br>
+    <table id="final-results">
+        <tr>
+            <th>Team Name</th>
+            <th>Final Score</th>
+        </tr>
+        @foreach (var team in @Model.Game.Teams.Where(t => t.Players?.Count > 0).OrderByDescending(t => t.Score))
+        {
+            <tr>
+                <td>@team.Name</td>
+                <td>@team.Score</td>
+            </tr>
+        }
+    </table>
+
+
+</div>
+
+<partial name="DisplayTeams" model="Model" />
